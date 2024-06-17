@@ -1,6 +1,6 @@
 {
     "name": "DSmyth",
-    "rootNamespace": "",
+    "rootNamespace": "DSmyth",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
