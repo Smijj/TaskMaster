@@ -17,7 +17,8 @@ namespace DSmyth.TaskModule {
         [SerializeField] private InputGlyph[] m_InputSequence = new InputGlyph[4];
         [SerializeField] private int m_CurrentInputSequenceIndex = 0;
 
-        private List<InputGlyphCtrl> m_InputGlyphs = new List<InputGlyphCtrl>(); 
+        private List<InputGlyphCtrl> m_InputGlyphs = new List<InputGlyphCtrl>();
+        private bool m_ListenForInput = true;
 
         private void Start() {
             GenerateInputSequence();
@@ -28,6 +29,8 @@ namespace DSmyth.TaskModule {
         }
 
         private void HandleTaskInput() {
+            if (!m_ListenForInput) return;
+
             // check if any of the possible task inputs are being pressed
             // if one is, check if it matches the current index pos of the input sequence
             // Matches = correct continue, Doesnt match = Incorrect failed task
@@ -48,6 +51,8 @@ namespace DSmyth.TaskModule {
 
         private void GenerateInputSequence() {
             if (m_PossibleTaskInputs.Count <= 0) return;
+
+            Debug.Log("Generate Input Seq");
 
             // Clear input glyphs objects and list
             foreach (var glyph in m_InputGlyphs) {
@@ -73,6 +78,8 @@ namespace DSmyth.TaskModule {
 
             // Highlight the first inputGlyph
             m_InputGlyphs[0].SetImageColour(m_ColourCurrentInput);
+
+            m_ListenForInput = true;
         }
 
         private void ProgressTask() {
@@ -91,22 +98,23 @@ namespace DSmyth.TaskModule {
             }
         }
         private void CompleteTask() {
+            m_ListenForInput = false;
             Debug.Log("Task Complete!");
             // Invoke OnTaskCompleted event
-            GenerateInputSequence();    // Create new InputSequence
-
+            StatesModule.TaskStates.OnTaskCompleted?.Invoke();
+            GenerateInputSequence();
         }
         private void FailTask() {
+            m_ListenForInput = false;
             Debug.Log("Task Failed...");
-            
+
             // Invoke OnTaskFailed event
+            StatesModule.TaskStates.OnTaskFailed?.Invoke();
             // Highlight Key that the player failed on red
             m_InputGlyphs[m_CurrentInputSequenceIndex].SetImageColour(m_ColourInputIncorrect);
-            // Wait 0.5s
-            // Reset InputSequence
-            GenerateInputSequence();    
-
-            
+            // Wait 0.5s, then Reset InputSequence
+            Invoke("GenerateInputSequence", 0.5f);
+            //LeanTween.delayedCall(gameObject, 0.5f, GenerateInputSequence);
         }
 
     }

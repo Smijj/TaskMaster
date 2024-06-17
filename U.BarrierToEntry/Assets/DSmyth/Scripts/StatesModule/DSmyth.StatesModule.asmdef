@@ -1,10 +1,7 @@
 {
-    "name": "DSmyth.TaskModule",
-    "rootNamespace": "DSmyth.TaskModule",
-    "references": [
-        "GUID:065221659470ea6499833ebf970478d3",
-        "GUID:14285d9fb9820d3428133f81e8c121db"
-    ],
+    "name": "DSmyth.StatesModule",
+    "rootNamespace": "DSmyth.StatesModule",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

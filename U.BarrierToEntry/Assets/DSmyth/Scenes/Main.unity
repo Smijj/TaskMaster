@@ -582,7 +582,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 931ff70f808b922498aded9bad76c316, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ColourInputCorrect: {r: 0, g: 1, b: 0.6579151, a: 1}
+  m_ColourInputCorrect: {r: 0, g: 1, b: 0.06572652, a: 1}
   m_ColourInputIncorrect: {r: 0.9716981, g: 0.04988368, b: 0, a: 1}
   m_ColourCurrentInput: {r: 0.990566, g: 0.85513246, b: 0.126157, a: 1}
   m_InputGlyphContainer: {fileID: 666653283}
@@ -904,18 +904,6 @@ PrefabInstance:
     - target: {fileID: 7226898694281326710, guid: 5498f0a5d7cf93749806b4473672b99f, type: 3}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7871011019284603221, guid: 5498f0a5d7cf93749806b4473672b99f, type: 3}
-      propertyPath: m_Color.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7871011019284603221, guid: 5498f0a5d7cf93749806b4473672b99f, type: 3}
-      propertyPath: m_Color.g
-      value: 0.04988368
-      objectReference: {fileID: 0}
-    - target: {fileID: 7871011019284603221, guid: 5498f0a5d7cf93749806b4473672b99f, type: 3}
-      propertyPath: m_Color.r
-      value: 0.9716981
       objectReference: {fileID: 0}
     - target: {fileID: 8349062737955214758, guid: 5498f0a5d7cf93749806b4473672b99f, type: 3}
       propertyPath: m_Pivot.x
