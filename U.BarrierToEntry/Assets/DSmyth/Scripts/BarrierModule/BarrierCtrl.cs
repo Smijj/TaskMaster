@@ -11,18 +11,14 @@ namespace DSmyth.BarrierModule
         [SerializeField] private float m_RotationSpeed = 20;
         [SerializeField] private float m_RotationRadius = 155;
         
-        [SerializeField] private float m_BarrierAngle;
-
         private void Start() {
             Cursor.lockState = CursorLockMode.Locked;
 
-
+            // Move Barrier to its starting pos
             m_Barrier.localPosition = new Vector3(0, -m_RotationRadius, 0);
         }
 
         private void Update() {
-
-            m_BarrierAngle = m_Barrier.localEulerAngles.z;
 
             // Keep the shield clamped to below the pivot point (i.e. 180 degrees of freedom)
             if (m_Barrier.localPosition.y <= 0) {
