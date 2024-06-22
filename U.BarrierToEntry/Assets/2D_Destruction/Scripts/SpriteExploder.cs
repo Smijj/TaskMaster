@@ -163,13 +163,17 @@ public static class SpriteExploder {
         return piece;
     }
 
-    public static List<GameObject> GenerateVoronoiPieces(GameObject source, int extraPoints = 0, int subshatterSteps = 0, Material mat = null)
+    public static List<GameObject> GenerateVoronoiPieces(GameObject prefabGameObject, int extraPoints = 0, int subshatterSteps = 0, Material mat = null)
     {
+        //string assetPath = "Assets/DSmyth/Prefabs/VideoEnemy.prefab";
+        //var go = PrefabUtility.LoadPrefabContents(assetPath);
+        var source = prefabGameObject.GetComponentInChildren<Explodable>().gameObject;
         List<GameObject> pieces = new List<GameObject>();
 
         if (mat == null)
         {
-            mat = createFragmentMaterial(source);
+            //mat = createFragmentMaterial(source);
+            mat = source.GetComponent<SpriteRenderer>().sharedMaterial;
         }
 
         //get transform information
@@ -212,10 +216,11 @@ public static class SpriteExploder {
             clippedRegions = ClipperHelper.clip(borderPoints, region);
             foreach (List<Vector2> clippedRegion in clippedRegions)
             {
-                pieces.Add(generateVoronoiPiece(source, clippedRegion, origVelocity, origScale, origRotation, mat));
+                pieces.Add(generateVoronoiPiece(prefabGameObject, source, clippedRegion, origVelocity, origScale, origRotation, mat));
             }
         }
 
+        
         List<GameObject> morePieces = new List<GameObject>();
         if (subshatterSteps > 0)
         {
@@ -224,6 +229,8 @@ public static class SpriteExploder {
             {
                 morePieces.AddRange(SpriteExploder.GenerateVoronoiPieces(piece, extraPoints, subshatterSteps));
                 GameObject.DestroyImmediate(piece);
+                Debug.Log("Destroyed " + piece.gameObject.name);
+
             }
         }
         else
@@ -231,18 +238,42 @@ public static class SpriteExploder {
             morePieces = pieces;
         }
 
+
         //reset transform information
         source.transform.localScale = origScale;
         source.transform.localRotation = origRotation;
 
+        //PrefabUtility.SaveAsPrefabAsset(go, assetPath);
+        //PrefabUtility.UnloadPrefabContents(go);
         Resources.UnloadUnusedAssets();
+
+        //string piecesNames = "";
+        //foreach (var _piece in morePieces) {
+        //    piecesNames += _piece.name + "\n";
+        //}
+        //Debug.Log(piecesNames);
 
         return morePieces;
     }
-    private static GameObject generateVoronoiPiece(GameObject source, List<Vector2> region, Vector2 origVelocity, Vector3 origScale, Quaternion origRotation, Material mat)
+    private static GameObject generateVoronoiPiece(GameObject prefabSource, GameObject source, List<Vector2> region, Vector2 origVelocity, Vector3 origScale, Quaternion origRotation, Material mat)
     {
-        //Create Game Object and set transform settings properly
+        //string assetPath = "Assets/DSmyth/Prefabs/VideoEnemy.prefab";
+
+//#if UNITY_EDITOR
+//        GameObject piece;
+//        using (var editingScope = new PrefabUtility.EditPrefabContentsScope(PrefabUtility.path)) {
+//            var prefabRoot = editingScope.prefabContentsRoot;
+
+//            piece = new GameObject(prefabRoot.name + " piece");
+
+//        }
+//#endif
+
+        //Debug.Log("Pieces Parent " + source.GetComponent<Explodable>().FragmentsParent);
         GameObject piece = new GameObject(source.name + " piece");
+        //GameObject piece = new GameObject();
+
+        //Create Game Object and set transform settings properly
         piece.transform.position = source.transform.position;
         piece.transform.rotation = source.transform.rotation;
         piece.transform.localScale = source.transform.localScale;
@@ -283,27 +314,40 @@ public static class SpriteExploder {
         uMesh.RecalculateBounds();
 
 
+        // Set new Piece's Parent
+        piece.transform.parent = source.GetComponent<Explodable>().FragmentsParent;
+
+
+        // Assign mesh
+//#if UNITY_EDITOR
+//        //EditorUtility.SetDirty(meshFilter);
+
+//        using (var editingScope = new PrefabUtility.EditPrefabContentsScope(assetPath)) {
+//            var prefabRoot = editingScope.prefabContentsRoot;
+
+//            meshFilter.mesh = uMesh;
+
+//        }
+//#else
+        meshFilter.mesh = uMesh;
+//#endif
+
+        // Assign Material
+//#if UNITY_EDITOR
+//        //EditorUtility.SetDirty(meshRenderer);
+
+//        using (var editingScope = new PrefabUtility.EditPrefabContentsScope(assetPath)) {
+//            var prefabRoot = editingScope.prefabContentsRoot;
+
+//            meshRenderer.sharedMaterial = mat;
+
+//        }
+//#else
         //setFragmentMaterial(piece, source);
         meshRenderer.sharedMaterial = mat;
-#if UNITY_EDITOR
-        EditorUtility.SetDirty(meshRenderer);
-
-        //using (var editingScope = new PrefabUtility.EditPrefabContentsScope(PrefabStageUtility.GetPrefabStage(source).assetPath)) {
-        //    var prefabRoot = editingScope.prefabContentsRoot;
-
-        //    piece.GetComponent<MeshRenderer>().sharedMaterial = mat;
-
-        //}
-#endif
+//#endif
 
 
-        //assign mesh
-        meshFilter.mesh = uMesh;
-#if UNITY_EDITOR
-        EditorUtility.SetDirty(meshFilter);
-
-
-#endif
 
         //Create and Add Polygon Collider
         PolygonCollider2D collider = piece.AddComponent<PolygonCollider2D>();
@@ -313,9 +357,9 @@ public static class SpriteExploder {
         Rigidbody2D rigidbody = piece.AddComponent<Rigidbody2D>();
         rigidbody.velocity = origVelocity;
 
-//#if UNITY_EDITOR
-//        EditorUtility.SetDirty(piece);
-//#endif
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(piece);
+#endif
 
 
         return piece;

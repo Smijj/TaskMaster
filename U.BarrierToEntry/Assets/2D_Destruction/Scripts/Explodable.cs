@@ -27,8 +27,11 @@ public class Explodable : MonoBehaviour
     };
     public ShatterType shatterType;
     [SerializeField] private Transform m_FragmentsParent;
+    public Transform FragmentsParent => m_FragmentsParent;
     public List<GameObject> fragments = new List<GameObject>();
     private List<List<Vector2>> polygons = new List<List<Vector2>>();
+
+    private bool m_DrawGizmos = false;
 
     private void Awake() {
         if (!m_FragmentsParent) m_FragmentsParent = transform;
@@ -43,7 +46,7 @@ public class Explodable : MonoBehaviour
         //if fragments were not created before runtime then create them now
         if (fragments.Count == 0 && allowRuntimeFragmentation)
         {
-            generateFragments();
+            //generateFragments();
         }
         //otherwise unparent and activate them
         else
@@ -76,28 +79,30 @@ public class Explodable : MonoBehaviour
         var go = PrefabUtility.LoadPrefabContents(assetPath);
         //Undo.RecordObject(prefabStage.prefabContentsRoot, "Created Fragments.");
         
-        if (fragments.Count > 0)
-        {
-            deleteFragments();
-        }
-        generateFragments();
-        setPolygonsForDrawing();
-        foreach (GameObject frag in fragments)
-        {
-            //var prefabAsset = Selection.activeObject;
-            frag.transform.parent = m_FragmentsParent;
+        if (fragments.Count > 0) deleteFragments();
+        generateFragments(go);
+        if (m_DrawGizmos) setPolygonsForDrawing();
+
+        foreach (GameObject frag in fragments) {
+            //frag.transform.parent = m_FragmentsParent;
             frag.SetActive(false);
 
-            //EditorUtility.SetDirty(frag);
+            EditorUtility.SetDirty(frag);
         }
+
 
         EditorUtility.SetDirty(go);
         EditorSceneManager.MarkSceneDirty(go.scene);
 
         PrefabUtility.SaveAsPrefabAsset(go, assetPath);
-        PrefabUtility.UnloadPrefabContents(go);
+        //PrefabUtility.UnloadPrefabContents(go);
 
         Debug.Log("Saving Prefab");
+        string piecesNames = "";
+        foreach (var _piece in fragments) {
+            piecesNames += _piece.name + "\n";
+        }
+        Debug.Log("Frags: \n" + piecesNames);
     }
 #endif
     public void deleteFragments()
@@ -119,7 +124,7 @@ public class Explodable : MonoBehaviour
     /// <summary>
     /// Turns Gameobject into multiple fragments
     /// </summary>
-    private void generateFragments()
+    private void generateFragments(GameObject prefabGameObject)
     {
         fragments = new List<GameObject>();
         switch (shatterType)
@@ -128,7 +133,7 @@ public class Explodable : MonoBehaviour
                 fragments = SpriteExploder.GenerateTriangularPieces(gameObject, extraPoints, subshatterSteps);
                 break;
             case ShatterType.Voronoi:
-                fragments = SpriteExploder.GenerateVoronoiPieces(gameObject, extraPoints, subshatterSteps);
+                fragments = SpriteExploder.GenerateVoronoiPieces(prefabGameObject, extraPoints, subshatterSteps);
                 break;
             default:
                 Debug.Log("invalid choice");
@@ -181,7 +186,7 @@ public class Explodable : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (Application.isEditor)
+        if (Application.isEditor && m_DrawGizmos)
         {
             if (polygons.Count == 0 && fragments.Count != 0)
             {

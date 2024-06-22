@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 275251088304578284}
   - component: {fileID: 6417163811944173617}
-  - component: {fileID: 4182203904540232245}
+  - component: {fileID: 5342553770363596392}
   - component: {fileID: -7913667483888919826}
   m_Layer: 0
-  m_Name: VideoEnemy
+  m_Name: VideoEnemy 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54,8 +54,8 @@ MonoBehaviour:
   m_VPlayer: {fileID: 5377248288419650944}
   m_Explodable: {fileID: 8551926850097721993}
   m_FragmentVPlayers: []
---- !u!61 &4182203904540232245
-BoxCollider2D:
+--- !u!60 &5342553770363596392
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -70,16 +70,19 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 6, y: 4}
-  m_EdgeRadius: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.5, y: 0.5}
+      - {x: -0.5, y: -0.5}
+      - {x: 0.5, y: -0.5}
+      - {x: 0.5, y: 0.5}
 --- !u!50 &-7913667483888919826
 Rigidbody2D:
   serializedVersion: 4
@@ -88,7 +91,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 275251088304578281}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -144,7 +147,7 @@ GameObject:
   - component: {fileID: 8551926850097721993}
   - component: {fileID: 7395911020710536387}
   - component: {fileID: 5377248288419650944}
-  - component: {fileID: 71351613550401706}
+  - component: {fileID: 8469061208691331778}
   - component: {fileID: 5205870783773366599}
   m_Layer: 0
   m_Name: MainSprite
@@ -181,23 +184,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allowRuntimeFragmentation: 0
-  extraPoints: 5
+  extraPoints: 1
   subshatterSteps: 0
   fragmentLayer: Default
   sortingLayerName: Default
   orderInLayer: 0
   shatterType: 1
   m_FragmentsParent: {fileID: 1049176942238991072}
-  fragments:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  fragments: []
 --- !u!212 &7395911020710536387
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -285,8 +279,8 @@ VideoPlayer:
   m_WaitForFirstFrame: 1
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
---- !u!60 &71351613550401706
-PolygonCollider2D:
+--- !u!61 &8469061208691331778
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -308,12 +302,9 @@ PolygonCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -0.5, y: 0.5}
-      - {x: -0.5, y: -0.5}
-      - {x: 0.5, y: -0.5}
-      - {x: 0.5, y: 0.5}
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!50 &5205870783773366599
 Rigidbody2D:
   serializedVersion: 4
