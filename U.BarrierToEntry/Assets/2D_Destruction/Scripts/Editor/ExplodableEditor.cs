@@ -1,13 +1,19 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 
 [CustomEditor(typeof(Explodable))]
 public class ExplodableEditor : Editor {
 
+    SerializedProperty m_FragmentsParent;
+
+    private void OnEnable() {
+        m_FragmentsParent = serializedObject.FindProperty("m_FragmentsParent");
+    }
+
     public override void OnInspectorGUI()
     {
+        serializedObject.Update();
+
         Explodable myTarget = (Explodable)target;
         myTarget.allowRuntimeFragmentation = EditorGUILayout.Toggle("Allow Runtime Fragmentation", myTarget.allowRuntimeFragmentation);
         myTarget.shatterType = (Explodable.ShatterType)EditorGUILayout.EnumPopup("Shatter Type", myTarget.shatterType);
@@ -21,7 +27,8 @@ public class ExplodableEditor : Editor {
         myTarget.fragmentLayer = EditorGUILayout.TextField("Fragment Layer", myTarget.fragmentLayer);
         myTarget.sortingLayerName = EditorGUILayout.TextField("Sorting Layer", myTarget.sortingLayerName);
         myTarget.orderInLayer = EditorGUILayout.IntField("Order In Layer", myTarget.orderInLayer);
-        
+        EditorGUILayout.PropertyField(m_FragmentsParent);
+
         if (myTarget.GetComponent<PolygonCollider2D>() == null && myTarget.GetComponent<BoxCollider2D>() == null)
         {
             EditorGUILayout.HelpBox("You must add a BoxCollider2D or PolygonCollider2D to explode this sprite", MessageType.Warning);
@@ -39,6 +46,7 @@ public class ExplodableEditor : Editor {
                 EditorUtility.SetDirty(myTarget);
             }
         }
-        
+
+        serializedObject.ApplyModifiedProperties();
     }
 }

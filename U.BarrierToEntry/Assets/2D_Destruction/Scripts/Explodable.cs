@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+#if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.SceneManagement;
+#endif
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Explodable : MonoBehaviour
@@ -22,12 +26,18 @@ public class Explodable : MonoBehaviour
         Voronoi
     };
     public ShatterType shatterType;
+    [SerializeField] private Transform m_FragmentsParent;
     public List<GameObject> fragments = new List<GameObject>();
     private List<List<Vector2>> polygons = new List<List<Vector2>>();
-   
+
+    private void Awake() {
+        if (!m_FragmentsParent) m_FragmentsParent = transform;
+    }
+
     /// <summary>
     /// Creates fragments if necessary and destroys original gameobject
     /// </summary>
+    [ContextMenu("Explode")]
     public void explode()
     {
         //if fragments were not created before runtime then create them now
@@ -40,21 +50,32 @@ public class Explodable : MonoBehaviour
         {
             foreach (GameObject frag in fragments)
             {
-                frag.transform.parent = null;
+                //frag.transform.parent = null;
                 frag.SetActive(true);
             }
         }
-        //if fragments exist destroy the original
+        //if fragments exist Hide the original
         if (fragments.Count > 0)
         {
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
     /// <summary>
     /// Creates fragments and then disables them
     /// </summary>
+#if UNITY_EDITOR
     public void fragmentInEditor()
     {
+        //var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+
+        //GameObject assetRoot = Selection.activeObject as GameObject;
+        //string assetPath = AssetDatabase.GetAssetPath(gameObject.transform.root.gameObject);
+
+        string assetPath = "Assets/DSmyth/Prefabs/VideoEnemy.prefab";
+        var go = PrefabUtility.LoadPrefabContents(assetPath);
+        //Undo.RecordObject(prefabStage.prefabContentsRoot, "Created Fragments.");
+        
         if (fragments.Count > 0)
         {
             deleteFragments();
@@ -63,10 +84,22 @@ public class Explodable : MonoBehaviour
         setPolygonsForDrawing();
         foreach (GameObject frag in fragments)
         {
-            //frag.transform.parent = transform;
+            //var prefabAsset = Selection.activeObject;
+            frag.transform.parent = m_FragmentsParent;
             frag.SetActive(false);
+
+            //EditorUtility.SetDirty(frag);
         }
+
+        EditorUtility.SetDirty(go);
+        EditorSceneManager.MarkSceneDirty(go.scene);
+
+        PrefabUtility.SaveAsPrefabAsset(go, assetPath);
+        PrefabUtility.UnloadPrefabContents(go);
+
+        Debug.Log("Saving Prefab");
     }
+#endif
     public void deleteFragments()
     {
         foreach (GameObject frag in fragments)

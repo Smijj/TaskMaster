@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using Delaunay;
 using Delaunay.Geo;
+using UnityEditor.SceneManagement;
+
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public static class SpriteExploder {
     public static List<GameObject> GenerateTriangularPieces(GameObject source, int extraPoints = 0, int subshatterSteps = 0, Material mat = null)
@@ -96,28 +101,13 @@ public static class SpriteExploder {
     {
         //Create Game Object and set transform settings properly
         GameObject piece = new GameObject(source.name + " piece");
-        piece.transform.SetParent(source.transform);
         piece.transform.position = source.transform.position;
         piece.transform.rotation = source.transform.rotation;
         piece.transform.localScale = source.transform.localScale;
-        //piece.GetComponent<RectTransform>().sizeDelta = new Vector2(1, 1);
-        //piece.transform.localScale = Vector3.one;
 
         //Create and Add Mesh Components
         MeshFilter meshFilter = (MeshFilter)piece.AddComponent(typeof(MeshFilter));
         piece.AddComponent(typeof(MeshRenderer));
-
-        // Add Masking Components 
-        piece.AddComponent(typeof(Mask));
-        piece.AddComponent(typeof(Image));
-
-        // Create RawImage child object
-        GameObject rawImage = new GameObject("RawImage", typeof(RawImage));
-        rawImage.transform.SetParent(piece.transform);
-        rawImage.transform.position = source.transform.position;
-        rawImage.transform.rotation = source.transform.rotation;
-        rawImage.transform.localScale = source.transform.localScale;
-        rawImage.GetComponent<RectTransform>().sizeDelta = new Vector2(1,1);
 
         Mesh uMesh = piece.GetComponent<MeshFilter>().sharedMesh;
         if (uMesh == null)
@@ -126,24 +116,14 @@ public static class SpriteExploder {
             uMesh = meshFilter.sharedMesh;
         }
         Vector3[] vertices = new Vector3[3];
-        Vector2[] verticesVec2 = new Vector2[3];
         int[] triangles = new int[3];
-        ushort[] trianglesUShort = new ushort[3];
 
         vertices[0] = new Vector3(tri[0].x, tri[0].y, 0);
         vertices[1] = new Vector3(tri[1].x, tri[1].y, 0);
         vertices[2] = new Vector3(tri[2].x, tri[2].y, 0);
-        verticesVec2[0] = new Vector2(tri[0].x, tri[0].y);
-        verticesVec2[1] = new Vector2(tri[1].x, tri[1].y);
-        verticesVec2[2] = new Vector2(tri[2].x, tri[2].y);
         triangles[0] = 0;
         triangles[1] = 1;
         triangles[2] = 2;
-        trianglesUShort[0] = 0;
-        trianglesUShort[1] = 1;
-        trianglesUShort[2] = 2;
-
-        
 
         uMesh.vertices = vertices;
         uMesh.triangles = triangles;
@@ -169,15 +149,6 @@ public static class SpriteExploder {
 
         //assign mesh
         meshFilter.mesh = uMesh;
-
-        Rect rect = getRect(source);
-        //Sprite newSprite = Sprite.Create(new Texture2D(1, 1), rect, new Vector2(0.5f, 0.5f));
-
-        var texture2D = new Texture2D(64, 64);
-        Sprite newSprite = Sprite.Create(texture2D, rect, Vector2.zero, 100);
-
-        newSprite.OverrideGeometry(verticesVec2, trianglesUShort);
-        piece.GetComponent<Image>().sprite = newSprite;
 
         //Create and Add Polygon Collider
         PolygonCollider2D collider = piece.AddComponent<PolygonCollider2D>();
@@ -278,9 +249,9 @@ public static class SpriteExploder {
 
         //Create and Add Mesh Components
         MeshFilter meshFilter = (MeshFilter)piece.AddComponent(typeof(MeshFilter));
-        piece.AddComponent(typeof(MeshRenderer));
+        MeshRenderer meshRenderer = (MeshRenderer)piece.AddComponent(typeof(MeshRenderer));
 
-        Mesh uMesh = piece.GetComponent<MeshFilter>().sharedMesh;
+        Mesh uMesh = meshFilter.sharedMesh;
         if (uMesh == null)
         {
             meshFilter.mesh = new Mesh();
@@ -311,11 +282,28 @@ public static class SpriteExploder {
         centerMeshPivot(piece, diff);
         uMesh.RecalculateBounds();
 
+
         //setFragmentMaterial(piece, source);
-        piece.GetComponent<MeshRenderer>().sharedMaterial = mat;
+        meshRenderer.sharedMaterial = mat;
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(meshRenderer);
+
+        //using (var editingScope = new PrefabUtility.EditPrefabContentsScope(PrefabStageUtility.GetPrefabStage(source).assetPath)) {
+        //    var prefabRoot = editingScope.prefabContentsRoot;
+
+        //    piece.GetComponent<MeshRenderer>().sharedMaterial = mat;
+
+        //}
+#endif
+
 
         //assign mesh
         meshFilter.mesh = uMesh;
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(meshFilter);
+
+
+#endif
 
         //Create and Add Polygon Collider
         PolygonCollider2D collider = piece.AddComponent<PolygonCollider2D>();
@@ -325,6 +313,9 @@ public static class SpriteExploder {
         Rigidbody2D rigidbody = piece.AddComponent<Rigidbody2D>();
         rigidbody.velocity = origVelocity;
 
+//#if UNITY_EDITOR
+//        EditorUtility.SetDirty(piece);
+//#endif
 
 
         return piece;

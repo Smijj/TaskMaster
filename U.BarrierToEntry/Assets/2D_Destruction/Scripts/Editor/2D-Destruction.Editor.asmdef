@@ -1,10 +1,12 @@
 {
-    "name": "DSmyth.EnemyModule",
-    "rootNamespace": "DSmyth.EnemyModule",
+    "name": "2D-Destruction.Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:b5b82bd5f57cf3c4e85d94aa90132399"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
