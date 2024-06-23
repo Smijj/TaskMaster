@@ -39,21 +39,18 @@ namespace DSmyth.EnemyModule
 
         [ContextMenu("SpawnEnemy")]
         private void SpawnEnemy() {
-            Vector3 spawnPos = GetRandomPointAlongCircleCircumference(m_CenterPoint, m_EnemySpawnRadius, m_SpawnCircumferenceRangeMin, m_SpawnCircumferenceRangeMax);
+            Vector2 spawnPos = GetRandomPointAlongCircleCircumference(m_CenterPoint, m_EnemySpawnRadius, m_SpawnCircumferenceRangeMin, m_SpawnCircumferenceRangeMax);
             EnemyCtrl enemyCtrl = Instantiate(m_EnemyPrefab, m_EnemyParent);
-            enemyCtrl.transform.position = new Vector3(spawnPos.x, spawnPos.y, 0);
-            enemyCtrl.SetTarget(m_CenterPoint);
-
-            //m_ActiveEnemies.Add(enemyCtrl);
+            enemyCtrl.SetTarget(m_CenterPoint, spawnPos);
         }
 
-        private Vector3 GetRandomPointAlongCircleCircumference(RectTransform circleOrigin, float radius, float circumferenceRangeMin = 0f, float circumferenceRangeMax = 2f) {
+        private Vector2 GetRandomPointAlongCircleCircumference(RectTransform circleOrigin, float radius, float circumferenceRangeMin = 0f, float circumferenceRangeMax = 2f) {
 
             // Calculate the 'x' 'y' of a point on the circumference of a circle that has 'r' radius, 'a' angle (in radians 0..2PI) and is at the position 'cx' 'cy'
             // x = cx + r * cos(a)
             // y = cy + r * sin(a)
 
-            Vector3 randomPoint = new Vector3();
+            Vector2 randomPoint = new Vector2();
             float randomRadianPoint = Mathf.PI * Random.Range(circumferenceRangeMin, circumferenceRangeMax);
             randomPoint.x = circleOrigin.position.x + radius * Mathf.Cos(randomRadianPoint);
             randomPoint.y = circleOrigin.position.y + radius * Mathf.Sin(randomRadianPoint);

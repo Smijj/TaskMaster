@@ -9,8 +9,10 @@ namespace DSmyth.EnemyModule
     {
         [Header("Settings")]
         [SerializeField] private float m_TravelTime = 4f;
+        [SerializeField] private float m_FragmentLifetime = 1.5f;
         [ReadOnly, SerializeField] private float m_TravelTimeCounter = 0;
         [ReadOnly, SerializeField] private bool m_Initialized = false;
+        [SerializeField] private Material m_DeathSpriteMaterial;
         [SerializeField] private VideoClip m_VideoToPlay;
         
         [Header("References")]
@@ -18,11 +20,8 @@ namespace DSmyth.EnemyModule
         [SerializeField] private VideoPlayer m_VPlayer;
         [SerializeField] private Explodable m_Explodable;
 
-        [Header("Debug")]
-        [SerializeField] private List<VideoPlayer> m_FragmentVPlayers = new List<VideoPlayer>();
-        
         private RectTransform m_Target;
-        private Vector3 m_StartPos;
+        private Vector2 m_StartPos;
         private bool m_IsDead = false;
 
 
@@ -32,26 +31,23 @@ namespace DSmyth.EnemyModule
             if (!m_VPlayer) m_VPlayer = GetComponentInChildren<VideoPlayer>();
             if (!m_Explodable) m_Explodable = GetComponentInChildren<Explodable>();
 
-            if (m_VPlayer && m_VideoToPlay) m_VPlayer.clip = m_VideoToPlay;
+            if (m_VPlayer && m_VideoToPlay) m_VPlayer.clip = m_VideoToPlay; // Set Enemy Video Clip
             if (m_Explodable && m_Explodable.fragments.Count > 0) {
                 foreach (var fragment in m_Explodable.fragments) {
-                    VideoPlayer player = fragment.GetComponent<VideoPlayer>();
-                    if (m_VideoToPlay) player.clip = m_VideoToPlay;
-                    m_FragmentVPlayers.Add(player);
+                    MeshRenderer MeshRen = fragment.GetComponent<MeshRenderer>();
+                    if (MeshRen && m_DeathSpriteMaterial) MeshRen.material = m_DeathSpriteMaterial;   // Set Enemy Death Sprite Material
                 }
             }
-            //foreach (var videoPlayer in m_FragmentVPlayers) {
-            //    if (videoPlayer.gameObject.activeSelf) videoPlayer.Prepare();
-            //}
         }
 
         private void Update() {
             HandleEnemyMovement();
         }
 
-        public void SetTarget(RectTransform target) {
+        public void SetTarget(RectTransform target, Vector2 spawnPos) {
+            transform.position = spawnPos;
             m_Target = target;
-            m_StartPos = transform.position;
+            m_StartPos = spawnPos;
             m_Initialized = true;
         }
 
@@ -61,7 +57,7 @@ namespace DSmyth.EnemyModule
             m_TravelTimeCounter += Time.deltaTime;
             if (m_TravelTimeCounter >= m_TravelTime) Die();   // If something goes wrong and the enemy doesnt hit any of the colliders that should destroy it, clean it up at the end of its movement path.
 
-            transform.position = Vector3.Lerp(m_StartPos, m_Target.position, m_TravelTimeCounter / m_TravelTime);
+            transform.position = Vector2.Lerp(m_StartPos, m_Target.position, m_TravelTimeCounter / m_TravelTime);
         }
 
         private void HandleDeath() {
@@ -77,20 +73,16 @@ namespace DSmyth.EnemyModule
             if (m_Collider) m_Collider.enabled = false;
 
             m_Explodable.explode(10f);
-            foreach (var player in m_FragmentVPlayers) {
-                player.Play();
-                player.frame = m_VPlayer.frame;
-                player.Pause();
-            }
 
             // Wait a few seconds then destroy the enemy object
-            Invoke("Die", 3f);
+            Invoke("Die", m_FragmentLifetime);
         }
         private void Die() {
             Destroy(gameObject);
         }
 
         private void OnTriggerEnter2D(Collider2D collision) {
+            if (m_IsDead) return;
 
             Debug.Log("Trigger Entered " + collision.gameObject.name);
 

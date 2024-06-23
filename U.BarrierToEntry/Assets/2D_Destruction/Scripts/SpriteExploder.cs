@@ -167,13 +167,13 @@ public static class SpriteExploder {
     {
         //string assetPath = "Assets/DSmyth/Prefabs/VideoEnemy.prefab";
         //var go = PrefabUtility.LoadPrefabContents(assetPath);
-        var source = prefabGameObject.transform.GetChild(0).gameObject;
+        var source = prefabGameObject;
         List<GameObject> pieces = new List<GameObject>();
 
         if (mat == null)
         {
             //mat = createFragmentMaterial(source);
-            mat = source.GetComponent<SpriteRenderer>().sharedMaterial;
+            mat = source.GetComponentInChildren<SpriteRenderer>().sharedMaterial;
         }
 
         //get transform information
@@ -238,42 +238,18 @@ public static class SpriteExploder {
             morePieces = pieces;
         }
 
-
         //reset transform information
         source.transform.localScale = origScale;
         source.transform.localRotation = origRotation;
 
-        //PrefabUtility.SaveAsPrefabAsset(go, assetPath);
-        //PrefabUtility.UnloadPrefabContents(go);
         Resources.UnloadUnusedAssets();
-
-        //string piecesNames = "";
-        //foreach (var _piece in morePieces) {
-        //    piecesNames += _piece.name + "\n";
-        //}
-        //Debug.Log(piecesNames);
 
         return morePieces;
     }
     private static GameObject generateVoronoiPiece(GameObject prefabSource, GameObject source, List<Vector2> region, Vector2 origVelocity, Vector3 origScale, Quaternion origRotation, Material mat)
     {
-        //string assetPath = "Assets/DSmyth/Prefabs/VideoEnemy.prefab";
-
-//#if UNITY_EDITOR
-//        GameObject piece;
-//        using (var editingScope = new PrefabUtility.EditPrefabContentsScope(PrefabUtility.path)) {
-//            var prefabRoot = editingScope.prefabContentsRoot;
-
-//            piece = new GameObject(prefabRoot.name + " piece");
-
-//        }
-//#endif
-
-        //Debug.Log("Pieces Parent " + source.GetComponent<Explodable>().FragmentsParent);
-        GameObject piece = new GameObject(source.name + " piece");
-        //GameObject piece = new GameObject();
-
         //Create Game Object and set transform settings properly
+        GameObject piece = new GameObject(source.name + " piece");
         piece.transform.position = source.transform.position;
         piece.transform.rotation = source.transform.rotation;
         piece.transform.localScale = source.transform.localScale;
@@ -282,8 +258,8 @@ public static class SpriteExploder {
         MeshFilter meshFilter = (MeshFilter)piece.AddComponent(typeof(MeshFilter));
         MeshRenderer meshRenderer = (MeshRenderer)piece.AddComponent(typeof(MeshRenderer));
 
-        //Mesh uMesh = meshFilter.sharedMesh;
-        Mesh uMesh = null;
+        Mesh uMesh = meshFilter.sharedMesh;
+        //Mesh uMesh = null;
         if (uMesh == null) {
             meshFilter.mesh = new Mesh();
             uMesh = meshFilter.sharedMesh;
@@ -296,9 +272,9 @@ public static class SpriteExploder {
 
         uMesh.vertices = vertices;
         uMesh.triangles = triangles;
-        if (source.GetComponent<SpriteRenderer>() != null)
+        if (source.GetComponentInChildren<SpriteRenderer>() != null)
         {
-            uMesh.uv = calcUV(vertices, source.GetComponent<SpriteRenderer>(), source.transform);
+            uMesh.uv = calcUV(vertices, source.GetComponentInChildren<SpriteRenderer>(), source.transform);
         }
         else
         {
@@ -316,7 +292,7 @@ public static class SpriteExploder {
 
         // Set new Piece's Parent
         //piece.transform.parent = source.GetComponent<Explodable>().FragmentsParent;
-        piece.transform.parent = prefabSource.transform.GetChild(1);
+        //piece.transform.parent = prefabSource.transform.GetChild(1);
 
 
         // Assign mesh
@@ -401,7 +377,7 @@ public static class SpriteExploder {
     /// <returns>a Rectangle representing the rendering bounds of the object</returns>
     private static Rect getRect(GameObject source)
     {
-        Bounds bounds = source.GetComponent<Renderer>().bounds;
+        Bounds bounds = source.GetComponentInChildren<Renderer>().bounds;
         //return new Rect(source.transform.localPosition - bounds.extents, bounds.size);
         return new Rect(bounds.extents.x*-1, bounds.extents.y*-1,bounds.size.x,bounds.size.y);
     }

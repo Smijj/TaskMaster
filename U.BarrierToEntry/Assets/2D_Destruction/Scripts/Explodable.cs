@@ -53,13 +53,7 @@ public class Explodable : MonoBehaviour
         {
             foreach (GameObject frag in fragments)
             {
-                //frag.transform.parent = null;
-
                 frag.SetActive(true);
-                //frag.GetComponent<MeshRenderer>().enabled = true;
-                //frag.GetComponent<MeshRenderer>().forceRenderingOff = false;
-                //frag.GetComponent<PolygonCollider2D>().enabled = true;
-                //frag.GetComponent<Rigidbody2D>().gravityScale = 0.5f;
 
                 // Explode in random direction
                 Vector2 randomForce = new Vector2(Random.Range(-1, 1), Random.Range(-1, 1)) * explodeForce;
@@ -70,7 +64,7 @@ public class Explodable : MonoBehaviour
         if (fragments.Count > 0)
         {
             //Destroy(gameObject);
-            gameObject.SetActive(false);
+            transform.GetChild(0).gameObject.SetActive(false);
         }
     }
     /// <summary>
@@ -79,42 +73,34 @@ public class Explodable : MonoBehaviour
 #if UNITY_EDITOR
     public void fragmentInEditor()
     {
-        //var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
-
-        //GameObject assetRoot = Selection.activeObject as GameObject;
-        //string assetPath = AssetDatabase.GetAssetPath(gameObject.transform.root.gameObject);
-
         string assetPath = "Assets/DSmyth/Prefabs/VideoEnemy.prefab";
         var go = PrefabUtility.LoadPrefabContents(assetPath);
-        //Undo.RecordObject(prefabStage.prefabContentsRoot, "Created Fragments.");
         
-        if (fragments.Count > 0) deleteFragments();
+        if (fragments.Count > 0) {
+            Object[] prefabAssets = AssetDatabase.LoadAllAssetsAtPath(assetPath);
+            Debug.Log(prefabAssets.Length);
+            foreach (var asset in prefabAssets) {
+                if (asset.GetType() == typeof(Mesh)) {
+                    DestroyImmediate(asset, true);
+                }
+            }
+            deleteFragments();
+        }
         generateFragments(go);
         if (m_DrawGizmos) setPolygonsForDrawing();
 
         foreach (GameObject frag in fragments) {
             frag.transform.parent = m_FragmentsParent;
             frag.SetActive(false);
-            //frag.GetComponent<MeshRenderer>().enabled = false;
-            //frag.GetComponent<MeshRenderer>().forceRenderingOff = true;
-            //frag.GetComponent<Rigidbody2D>().gravityScale = 0f;
 
             EditorUtility.SetDirty(frag);
         }
-
 
         EditorUtility.SetDirty(go);
         EditorSceneManager.MarkSceneDirty(go.scene);
 
         PrefabUtility.SaveAsPrefabAsset(go, assetPath);
         //PrefabUtility.UnloadPrefabContents(go);
-
-        Debug.Log("Saving Prefab");
-        string piecesNames = "";
-        foreach (var _piece in fragments) {
-            piecesNames += _piece.name + "\n";
-        }
-        Debug.Log("Frags: \n" + piecesNames);
     }
 #endif
     public void deleteFragments()
@@ -123,6 +109,9 @@ public class Explodable : MonoBehaviour
         {
             if (Application.isEditor)
             {
+                // Need to get the prefab and destroy the mesh on each fragment before destroying the fragment here
+                Mesh fragMesh = frag.GetComponent<MeshFilter>().sharedMesh;
+                if (fragMesh) DestroyImmediate(fragMesh, true);
                 DestroyImmediate(frag);
             }
             else
