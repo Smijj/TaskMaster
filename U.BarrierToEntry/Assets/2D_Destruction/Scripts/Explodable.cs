@@ -31,7 +31,7 @@ public class Explodable : MonoBehaviour
     public List<GameObject> fragments = new List<GameObject>();
     private List<List<Vector2>> polygons = new List<List<Vector2>>();
 
-    private bool m_DrawGizmos = false;
+    [SerializeField] private bool m_DrawGizmos = false;
 
     private void Awake() {
         if (!m_FragmentsParent) m_FragmentsParent = transform;
@@ -41,7 +41,7 @@ public class Explodable : MonoBehaviour
     /// Creates fragments if necessary and destroys original gameobject
     /// </summary>
     [ContextMenu("Explode")]
-    public void explode()
+    public void explode(float explodeForce = 5f)
     {
         //if fragments were not created before runtime then create them now
         if (fragments.Count == 0 && allowRuntimeFragmentation)
@@ -54,7 +54,16 @@ public class Explodable : MonoBehaviour
             foreach (GameObject frag in fragments)
             {
                 //frag.transform.parent = null;
+
                 frag.SetActive(true);
+                //frag.GetComponent<MeshRenderer>().enabled = true;
+                //frag.GetComponent<MeshRenderer>().forceRenderingOff = false;
+                //frag.GetComponent<PolygonCollider2D>().enabled = true;
+                //frag.GetComponent<Rigidbody2D>().gravityScale = 0.5f;
+
+                // Explode in random direction
+                Vector2 randomForce = new Vector2(Random.Range(-1, 1), Random.Range(-1, 1)) * explodeForce;
+                frag.GetComponent<Rigidbody2D>().AddForce(randomForce, ForceMode2D.Impulse);
             }
         }
         //if fragments exist Hide the original
@@ -84,8 +93,11 @@ public class Explodable : MonoBehaviour
         if (m_DrawGizmos) setPolygonsForDrawing();
 
         foreach (GameObject frag in fragments) {
-            //frag.transform.parent = m_FragmentsParent;
+            frag.transform.parent = m_FragmentsParent;
             frag.SetActive(false);
+            //frag.GetComponent<MeshRenderer>().enabled = false;
+            //frag.GetComponent<MeshRenderer>().forceRenderingOff = true;
+            //frag.GetComponent<Rigidbody2D>().gravityScale = 0f;
 
             EditorUtility.SetDirty(frag);
         }

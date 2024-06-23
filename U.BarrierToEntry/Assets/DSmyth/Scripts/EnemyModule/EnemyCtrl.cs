@@ -14,6 +14,7 @@ namespace DSmyth.EnemyModule
         [SerializeField] private VideoClip m_VideoToPlay;
         
         [Header("References")]
+        [SerializeField] private Collider2D m_Collider;
         [SerializeField] private VideoPlayer m_VPlayer;
         [SerializeField] private Explodable m_Explodable;
 
@@ -27,6 +28,7 @@ namespace DSmyth.EnemyModule
 
         private void Awake() {
             m_TravelTimeCounter = 0;
+            if (!m_Collider) m_Collider = GetComponent<Collider2D>();
             if (!m_VPlayer) m_VPlayer = GetComponentInChildren<VideoPlayer>();
             if (!m_Explodable) m_Explodable = GetComponentInChildren<Explodable>();
 
@@ -38,8 +40,8 @@ namespace DSmyth.EnemyModule
                     m_FragmentVPlayers.Add(player);
                 }
             }
-            //foreach (var videoPlayer in m_ShardVPlayers) {
-            //    videoPlayer.Prepare();
+            //foreach (var videoPlayer in m_FragmentVPlayers) {
+            //    if (videoPlayer.gameObject.activeSelf) videoPlayer.Prepare();
             //}
         }
 
@@ -57,7 +59,7 @@ namespace DSmyth.EnemyModule
             if (!m_Target || m_IsDead || !m_Initialized) return;
 
             m_TravelTimeCounter += Time.deltaTime;
-            if (m_TravelTimeCounter >= m_TravelTime) Destroy(gameObject);   // If something goes wrong and the enemy doesnt hit any of the colliders that should destroy it, clean it up at the end of its movement path.
+            if (m_TravelTimeCounter >= m_TravelTime) Die();   // If something goes wrong and the enemy doesnt hit any of the colliders that should destroy it, clean it up at the end of its movement path.
 
             transform.position = Vector3.Lerp(m_StartPos, m_Target.position, m_TravelTimeCounter / m_TravelTime);
         }
@@ -72,10 +74,14 @@ namespace DSmyth.EnemyModule
             }
         }
         private void Shatter() {
+            if (m_Collider) m_Collider.enabled = false;
+
+            m_Explodable.explode(10f);
             foreach (var player in m_FragmentVPlayers) {
+                player.Play();
                 player.frame = m_VPlayer.frame;
+                player.Pause();
             }
-            m_Explodable.explode();
 
             // Wait a few seconds then destroy the enemy object
             Invoke("Die", 3f);

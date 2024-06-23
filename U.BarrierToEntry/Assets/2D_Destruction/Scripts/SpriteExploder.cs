@@ -167,7 +167,7 @@ public static class SpriteExploder {
     {
         //string assetPath = "Assets/DSmyth/Prefabs/VideoEnemy.prefab";
         //var go = PrefabUtility.LoadPrefabContents(assetPath);
-        var source = prefabGameObject.GetComponentInChildren<Explodable>().gameObject;
+        var source = prefabGameObject.transform.GetChild(0).gameObject;
         List<GameObject> pieces = new List<GameObject>();
 
         if (mat == null)
@@ -282,9 +282,9 @@ public static class SpriteExploder {
         MeshFilter meshFilter = (MeshFilter)piece.AddComponent(typeof(MeshFilter));
         MeshRenderer meshRenderer = (MeshRenderer)piece.AddComponent(typeof(MeshRenderer));
 
-        Mesh uMesh = meshFilter.sharedMesh;
-        if (uMesh == null)
-        {
+        //Mesh uMesh = meshFilter.sharedMesh;
+        Mesh uMesh = null;
+        if (uMesh == null) {
             meshFilter.mesh = new Mesh();
             uMesh = meshFilter.sharedMesh;
         }
@@ -315,39 +315,19 @@ public static class SpriteExploder {
 
 
         // Set new Piece's Parent
-        piece.transform.parent = source.GetComponent<Explodable>().FragmentsParent;
+        //piece.transform.parent = source.GetComponent<Explodable>().FragmentsParent;
+        piece.transform.parent = prefabSource.transform.GetChild(1);
 
 
         // Assign mesh
-//#if UNITY_EDITOR
-//        //EditorUtility.SetDirty(meshFilter);
-
-//        using (var editingScope = new PrefabUtility.EditPrefabContentsScope(assetPath)) {
-//            var prefabRoot = editingScope.prefabContentsRoot;
-
-//            meshFilter.mesh = uMesh;
-
-//        }
-//#else
         meshFilter.mesh = uMesh;
-//#endif
+        //PrefabUtility.ApplyObjectOverride(meshFilter, prefabSource.scene.path, InteractionMode.AutomatedAction);
+        AssetDatabase.AddObjectToAsset(uMesh, prefabSource.scene.path);
+        AssetDatabase.SaveAssets();
 
         // Assign Material
-//#if UNITY_EDITOR
-//        //EditorUtility.SetDirty(meshRenderer);
-
-//        using (var editingScope = new PrefabUtility.EditPrefabContentsScope(assetPath)) {
-//            var prefabRoot = editingScope.prefabContentsRoot;
-
-//            meshRenderer.sharedMaterial = mat;
-
-//        }
-//#else
         //setFragmentMaterial(piece, source);
         meshRenderer.sharedMaterial = mat;
-//#endif
-
-
 
         //Create and Add Polygon Collider
         PolygonCollider2D collider = piece.AddComponent<PolygonCollider2D>();

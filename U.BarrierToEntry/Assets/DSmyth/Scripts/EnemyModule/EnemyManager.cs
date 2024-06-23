@@ -8,7 +8,7 @@ namespace DSmyth.EnemyModule
     public class EnemyManager : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private RectTransform m_EnemyParent;
+        [SerializeField] private Transform m_EnemyParent;
         [SerializeField] private EnemyCtrl m_EnemyPrefab;
         [SerializeField] private RectTransform m_CenterPoint;
         
@@ -41,7 +41,7 @@ namespace DSmyth.EnemyModule
         private void SpawnEnemy() {
             Vector3 spawnPos = GetRandomPointAlongCircleCircumference(m_CenterPoint, m_EnemySpawnRadius, m_SpawnCircumferenceRangeMin, m_SpawnCircumferenceRangeMax);
             EnemyCtrl enemyCtrl = Instantiate(m_EnemyPrefab, m_EnemyParent);
-            enemyCtrl.transform.position = new Vector3(spawnPos.x, spawnPos.y, m_EnemyParent.position.z);
+            enemyCtrl.transform.position = new Vector3(spawnPos.x, spawnPos.y, 0);
             enemyCtrl.SetTarget(m_CenterPoint);
 
             //m_ActiveEnemies.Add(enemyCtrl);
