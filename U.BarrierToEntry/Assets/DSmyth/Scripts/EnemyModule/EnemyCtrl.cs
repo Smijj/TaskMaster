@@ -9,7 +9,8 @@ namespace DSmyth.EnemyModule
     {
         [Header("Settings")]
         [SerializeField] private float m_TravelTime = 4f;
-        [SerializeField] private float m_TravelTimeCounter = 0;
+        [ReadOnly, SerializeField] private float m_TravelTimeCounter = 0;
+        [ReadOnly, SerializeField] private bool m_Initialized = false;
         [SerializeField] private VideoClip m_VideoToPlay;
         
         [Header("References")]
@@ -49,10 +50,11 @@ namespace DSmyth.EnemyModule
         public void SetTarget(RectTransform target) {
             m_Target = target;
             m_StartPos = transform.position;
+            m_Initialized = true;
         }
 
         private void HandleEnemyMovement() {
-            if (!m_Target && m_IsDead) return;
+            if (!m_Target || m_IsDead || !m_Initialized) return;
 
             m_TravelTimeCounter += Time.deltaTime;
             if (m_TravelTimeCounter >= m_TravelTime) Destroy(gameObject);   // If something goes wrong and the enemy doesnt hit any of the colliders that should destroy it, clean it up at the end of its movement path.
@@ -60,9 +62,16 @@ namespace DSmyth.EnemyModule
             transform.position = Vector3.Lerp(m_StartPos, m_Target.position, m_TravelTimeCounter / m_TravelTime);
         }
 
-        private void Shatter() {
+        private void HandleDeath() {
             m_IsDead = true;    // Stops enemy from moving
 
+            if (m_Explodable) {
+                Shatter();
+            } else {
+                Die();
+            }
+        }
+        private void Shatter() {
             foreach (var player in m_FragmentVPlayers) {
                 player.frame = m_VPlayer.frame;
             }
@@ -80,11 +89,11 @@ namespace DSmyth.EnemyModule
             Debug.Log("Trigger Entered " + collision.gameObject.name);
 
             if (collision.CompareTag("Barrier")) {
-                Shatter();
+                HandleDeath();
             }
             if (collision.CompareTag("ProtectionArea")) {
                 // Reduce player health
-                Shatter();
+                HandleDeath();
             }
         }
     }

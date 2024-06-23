@@ -1,7 +1,9 @@
 {
     "name": "DSmyth.BarrierModule",
     "rootNamespace": "DSmyth.BarrierModule",
-    "references": [],
+    "references": [
+        "GUID:f285b3f556dafee42919f221c7d6a6da"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
