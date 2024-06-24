@@ -5,11 +5,12 @@ using UnityEngine.Video;
 
 namespace DSmyth.EnemyModule
 {
-    public class Enemy : MonoBehaviour
+    public class EnemyCtrl : MonoBehaviour
     {
-        [Header("Settings")]
+        [Header("Enemy Settings")]
         [SerializeField] private float m_TravelTime = 4f;
-        [ReadOnly, SerializeField] private float m_TravelTimeCounter = 0;
+        [SerializeField] private int m_EnemyDamage = 5;
+        private float m_TravelTimeCounter = 0;
         [ReadOnly, SerializeField] private bool m_Initialized = false;
         
         [Header("References")]
@@ -19,6 +20,10 @@ namespace DSmyth.EnemyModule
         private RectTransform m_Target;
         private Vector2 m_StartPos;
 
+        private void Reset() {
+            if (!m_Collider) m_Collider = GetComponent<Collider2D>();
+
+        }
 
         public virtual void Awake() {
             m_TravelTimeCounter = 0;
@@ -63,7 +68,7 @@ namespace DSmyth.EnemyModule
             }
             if (collision.CompareTag("ProtectionArea")) {
                 // Reduce player health
-                StatesModule.EnemyStates.OnDistractionSucessful?.Invoke();
+                StatesModule.EnemyStates.OnDistractionSucessful?.Invoke(m_EnemyDamage);
                 Die();
             }
         }

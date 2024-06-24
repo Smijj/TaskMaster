@@ -5,7 +5,7 @@ using UnityEngine.Video;
 
 namespace DSmyth.EnemyModule
 {
-    public class VideoEnemyCtrl : Enemy
+    public class VideoEnemyCtrl : EnemyCtrl
     {
         [Header("Video Enemy Settings")]
         [SerializeField] private float m_FragmentLifetime = 1.5f;
@@ -16,11 +16,16 @@ namespace DSmyth.EnemyModule
         [SerializeField] private VideoPlayer m_VPlayer;
         [SerializeField] private Explodable m_Explodable;
 
+        private void Reset() {
+            if (!m_VPlayer) m_VPlayer = GetComponentInChildren<VideoPlayer>();
+            if (!m_Explodable) m_Explodable = GetComponent<Explodable>();
+        }
+
         public override void Awake() {
             base.Awake();
 
             if (!m_VPlayer) m_VPlayer = GetComponentInChildren<VideoPlayer>();
-            if (!m_Explodable) m_Explodable = GetComponentInChildren<Explodable>();
+            if (!m_Explodable) m_Explodable = GetComponent<Explodable>();
 
             if (m_VPlayer && m_VideoToPlay) m_VPlayer.clip = m_VideoToPlay; // Set Enemy Video Clip
             if (m_Explodable && m_Explodable.fragments.Count > 0) {

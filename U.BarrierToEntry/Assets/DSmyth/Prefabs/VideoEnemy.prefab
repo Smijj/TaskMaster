@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TravelTime: 3
-  m_TravelTimeCounter: 0
+  m_EnemyDamage: 15
   m_Initialized: 0
   m_Collider: {fileID: 4866608783559954641}
   m_FragmentLifetime: 1.5

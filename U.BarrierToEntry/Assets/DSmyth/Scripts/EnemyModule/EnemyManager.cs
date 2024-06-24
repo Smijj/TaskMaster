@@ -9,7 +9,7 @@ namespace DSmyth.EnemyModule
     {
         [Header("References")]
         [SerializeField] private Transform m_EnemyParent;
-        [SerializeField] private Enemy m_EnemyPrefab;
+        [SerializeField] private EnemyCtrl m_EnemyPrefab;
         [SerializeField] private RectTransform m_CenterPoint;
         
         [Header("Enemy Settings")]
@@ -18,14 +18,15 @@ namespace DSmyth.EnemyModule
         
         [Header("Spawn Position Settings")]
         [SerializeField] private float m_EnemySpawnRadius = 10f;
-        [SerializeField] private float m_SpawnCircumferenceRangeMin = 1.3f;
-        [SerializeField] private float m_SpawnCircumferenceRangeMax = 1.7f;
+        [SerializeField] private float m_MinSpawnCircumferenceRange = 1.15f;
+        [SerializeField] private float m_MaxSpawnCircumferenceRange = 1.85f;
 
 
         //private List<EnemyCtrl> m_ActiveEnemies = new List<EnemyCtrl>();
 
         [Header("Debug")]
         [SerializeField] private bool m_DrawGizmos = true;
+
 
         private void Update() {
             // Spawn Enemies every few seconds
@@ -39,8 +40,8 @@ namespace DSmyth.EnemyModule
 
         [ContextMenu("SpawnEnemy")]
         private void SpawnEnemy() {
-            Vector2 spawnPos = GetRandomPointAlongCircleCircumference(m_CenterPoint, m_EnemySpawnRadius, m_SpawnCircumferenceRangeMin, m_SpawnCircumferenceRangeMax);
-            Enemy enemyCtrl = Instantiate(m_EnemyPrefab, m_EnemyParent);
+            Vector2 spawnPos = GetRandomPointAlongCircleCircumference(m_CenterPoint, m_EnemySpawnRadius, m_MinSpawnCircumferenceRange, m_MaxSpawnCircumferenceRange);
+            EnemyCtrl enemyCtrl = Instantiate(m_EnemyPrefab, m_EnemyParent);
             enemyCtrl.SetTarget(m_CenterPoint, spawnPos);
         }
 
