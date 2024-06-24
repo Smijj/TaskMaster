@@ -13,12 +13,13 @@ public class Explodable : MonoBehaviour
     public System.Action<List<GameObject>> OnFragmentsGenerated;
 
     public bool allowRuntimeFragmentation = false;
+    [SerializeField] private bool m_DrawGizmos = false;
     public int extraPoints = 0;
     public int subshatterSteps = 0;
 
-    public string fragmentLayer = "Default";
-    public string sortingLayerName = "Default";
-    public int orderInLayer = 0;
+    [SerializeField] public string fragmentLayer = "Default";
+    [SerializeField] public string sortingLayerName = "Default";
+    [SerializeField] public int orderInLayer = 0;
 
     public enum ShatterType
     {
@@ -27,11 +28,9 @@ public class Explodable : MonoBehaviour
     };
     public ShatterType shatterType;
     [SerializeField] private Transform m_FragmentsParent;
-    public Transform FragmentsParent => m_FragmentsParent;
     public List<GameObject> fragments = new List<GameObject>();
     private List<List<Vector2>> polygons = new List<List<Vector2>>();
 
-    [SerializeField] private bool m_DrawGizmos = false;
 
     private void Awake() {
         if (!m_FragmentsParent) m_FragmentsParent = transform;
