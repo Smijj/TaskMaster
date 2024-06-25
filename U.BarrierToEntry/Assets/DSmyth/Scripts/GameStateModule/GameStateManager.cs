@@ -8,10 +8,11 @@ namespace DSmyth.GameStateModule
     {
 
         [SerializeField] private int m_PlayerCurrentHealth = 100;
-        public int PlayerCurrentHealth { get => m_PlayerCurrentHealth; 
+        public int PlayerCurrentHealth { 
+            get => m_PlayerCurrentHealth; 
             private set {
                 m_PlayerCurrentHealth = value;
-                StatesModule.GameStates.OnHealthChanged?.Invoke(m_PlayerCurrentHealth);
+                StatesModule.GameStates.OnHealthChanged?.Invoke(value);
             }
         }
 
@@ -20,7 +21,7 @@ namespace DSmyth.GameStateModule
             get => m_CurrentScore;
             private set {
                 m_CurrentScore = value;
-                StatesModule.GameStates.OnScoreChanged?.Invoke(m_CurrentScore);
+                StatesModule.GameStates.OnScoreChanged?.Invoke(value);
             }
         }
         [SerializeField] private int m_TaskCompletedHealAmount = 5;
@@ -54,6 +55,9 @@ namespace DSmyth.GameStateModule
         private void OnTaskCompleted() {
             CurrentScore++;
             PlayerCurrentHealth += m_TaskCompletedHealAmount;
+            if (CurrentScore > StorageModule.DataHandler.SaveData.HighScore) {
+                StorageModule.DataHandler.SaveData.HighScore = CurrentScore;
+            }
         }
     }
 }
