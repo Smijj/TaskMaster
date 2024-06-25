@@ -6,17 +6,22 @@ namespace DSmyth.GameStateModule
 {
     public class GameStateManager : MonoBehaviour
     {
+        [Header("Config Settings")]
+        [SerializeField] private int m_MaxHealth = 100;
+        [SerializeField] private int m_TaskCompletedHealAmount = 5;
 
-        [SerializeField] private int m_PlayerCurrentHealth = 100;
-        public int PlayerCurrentHealth { 
-            get => m_PlayerCurrentHealth; 
+
+        [Header("Game Data")]
+        [ReadOnly, SerializeField] private int m_CurrentHealth = 100;
+        public int CurrentHealth { 
+            get => m_CurrentHealth; 
             private set {
-                m_PlayerCurrentHealth = value;
+                m_CurrentHealth = value;
                 StatesModule.GameStates.OnHealthChanged?.Invoke(value);
             }
         }
 
-        [SerializeField] private int m_CurrentScore = 0;
+        [ReadOnly, SerializeField] private int m_CurrentScore = 0;
         public int CurrentScore {
             get => m_CurrentScore;
             private set {
@@ -24,25 +29,34 @@ namespace DSmyth.GameStateModule
                 StatesModule.GameStates.OnScoreChanged?.Invoke(value);
             }
         }
-        [SerializeField] private int m_TaskCompletedHealAmount = 5;
 
 
         private void OnEnable() {
+            StatesModule.GameStates.OnGameplayInititalized += OnGamePlayInititalized;
+
             StatesModule.EnemyStates.OnDistractionSucessful += OnDistractionSucessful;
             StatesModule.TaskStates.OnTaskCompleted += OnTaskCompleted;
         }
         private void OnDisable() {
+            StatesModule.GameStates.OnGameplayInititalized -= OnGamePlayInititalized;
+
             StatesModule.EnemyStates.OnDistractionSucessful -= OnDistractionSucessful;
             StatesModule.TaskStates.OnTaskCompleted -= OnTaskCompleted;
         }
+
+        private void OnGamePlayInititalized() {
+            m_CurrentHealth = m_MaxHealth;
+            m_CurrentScore = 0;
+        }
+
 
         /// <summary>
         /// Reduce Player Health if distraction is sucessful in hitting the Focus Zone
         /// </summary>
         private void OnDistractionSucessful(int enemyDamage) {
-            PlayerCurrentHealth -= enemyDamage;
-            if (m_PlayerCurrentHealth <= 0) {
-                PlayerCurrentHealth = 0;
+            CurrentHealth -= enemyDamage;
+            if (m_CurrentHealth <= 0) {
+                CurrentHealth = 0;
 
                 // Game Over
                 StatesModule.GameStates.OnGameOver?.Invoke();
@@ -54,7 +68,7 @@ namespace DSmyth.GameStateModule
         /// </summary>
         private void OnTaskCompleted() {
             CurrentScore++;
-            PlayerCurrentHealth += m_TaskCompletedHealAmount;
+            CurrentHealth += m_TaskCompletedHealAmount;
             if (CurrentScore > StorageModule.DataHandler.SaveData.HighScore) {
                 StorageModule.DataHandler.SaveData.HighScore = CurrentScore;
             }

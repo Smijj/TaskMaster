@@ -4,8 +4,12 @@ using UnityEngine;
 
 namespace DSmyth.StorageModule {
     public static class DataHandler {
+
+        private static GameData m_SaveData;
         public static GameData SaveData {
             get {
+                if (m_SaveData != null) return m_SaveData;  // Check if the save data has already been Loaded, and return it if it has
+
                 string path = GameData.FilePath;        // Cache path
                 GameData data = Load<GameData>(path);   // Get data object
                 if (data == null) {

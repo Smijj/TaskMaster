@@ -1,10 +1,8 @@
 {
-    "name": "DSmyth.GameStateModule",
-    "rootNamespace": "DSmyth.GameStateModule",
+    "name": "DSmyth.UIModule",
+    "rootNamespace": "DSmyth.UIModule",
     "references": [
-        "GUID:14285d9fb9820d3428133f81e8c121db",
-        "GUID:f947ee40e4a7250479ef8dc5c4f65c19",
-        "GUID:f285b3f556dafee42919f221c7d6a6da"
+        "GUID:14285d9fb9820d3428133f81e8c121db"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
