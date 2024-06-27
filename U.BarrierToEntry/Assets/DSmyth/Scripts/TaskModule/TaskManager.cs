@@ -5,16 +5,18 @@ using UnityEngine;
 namespace DSmyth.TaskModule {
     public class TaskManager : MonoBehaviour {
         [Header("Settings")]
+        [SerializeField] private int m_InputSequenceLength = 4;
         [SerializeField] private Color m_ColourInputCorrect = Color.green;
         [SerializeField] private Color m_ColourInputIncorrect = Color.red;
         [SerializeField] private Color m_ColourCurrentInput = Color.yellow;
 
+        [Header("References")]
         [SerializeField] private Transform m_InputGlyphContainer;
         [SerializeField] private InputGlyphCtrl m_InputGlyphPrefab;
         [SerializeField] private List<InputGlyph> m_PossibleTaskInputs = new List<InputGlyph>();
 
         [Header("Debug")]
-        [SerializeField] private InputGlyph[] m_InputSequence = new InputGlyph[4];
+        [SerializeField] private InputGlyph[] m_InputSequence;
         [SerializeField] private int m_CurrentInputSequenceIndex = 0;
 
         private List<InputGlyphCtrl> m_InputGlyphs = new List<InputGlyphCtrl>();
@@ -63,7 +65,7 @@ namespace DSmyth.TaskModule {
             // Reset Index
             m_CurrentInputSequenceIndex = 0;
             // Create new InputSequence array
-            m_InputSequence = new InputGlyph[4];
+            m_InputSequence = new InputGlyph[m_InputSequenceLength];
             
             // Set InputSequence and spawn the corresponding UI elements
             for (int i = 0; i < m_InputSequence.Length; i++) {

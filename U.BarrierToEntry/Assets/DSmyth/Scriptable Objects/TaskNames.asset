@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c8645e2fc2f86f4f94aaa821502e9b3, type: 3}
+  m_Name: TaskNames
+  m_EditorClassIdentifier: 
+  Names:
+  - Find magic map
+  - Locate hidden portal
+  - Enter enchanted forest
+  - Talk to singing tree
+  - Collect glowing mushrooms
+  - 'Avoid dancing shadows '
+  - Unlock crystal cave
+  - 'Defeat giant squirrel '
+  - Gather rainbow dust
+  - Activate ancient statue
+  - Solve riddle of stars
+  - Rescue talking cat
+  - Ride flying turtle
+  - Defuse ticking pie
+  - Repair broken time machine
+  - 'Deliver message to moon '
+  - 'Explore upside-down castle '
+  - 'Activate portal home '
+  - 'Celebrate with unicorns    '

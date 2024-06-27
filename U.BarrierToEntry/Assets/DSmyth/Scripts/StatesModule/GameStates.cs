@@ -8,8 +8,10 @@ namespace DSmyth.StatesModule
         public static Action OnGameplayInititalized;
         public static Action OnGameOver;
 
-
-        public static Action<int> OnHealthChanged;
+        /// <summary>
+        /// Passes through the Current Health percentage whenever the Current Health value changes.
+        /// </summary>
+        public static Action<float> OnHealthChanged;
         public static Action<int> OnScoreChanged;
     }
 }

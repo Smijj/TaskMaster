@@ -12,12 +12,14 @@ namespace DSmyth.GameStateModule
 
 
         [Header("Game Data")]
-        [ReadOnly, SerializeField] private int m_CurrentHealth = 100;
+        [ReadOnly, SerializeField] private int m_CurrentHealth = 0;
         public int CurrentHealth { 
             get => m_CurrentHealth; 
             private set {
                 m_CurrentHealth = value;
-                StatesModule.GameStates.OnHealthChanged?.Invoke(value);
+                if (m_CurrentHealth < 0) m_CurrentHealth = 0;
+                else if (m_CurrentHealth > m_MaxHealth) m_CurrentHealth = m_MaxHealth;
+                StatesModule.GameStates.OnHealthChanged?.Invoke((float)m_CurrentHealth / m_MaxHealth);
             }
         }
 
@@ -56,7 +58,6 @@ namespace DSmyth.GameStateModule
         private void OnDistractionSucessful(int enemyDamage) {
             CurrentHealth -= enemyDamage;
             if (m_CurrentHealth <= 0) {
-                CurrentHealth = 0;
 
                 // Game Over
                 StatesModule.GameStates.OnGameOver?.Invoke();

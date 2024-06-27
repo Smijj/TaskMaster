@@ -61,7 +61,7 @@ namespace DSmyth.EnemyModule
         private void OnTriggerEnter2D(Collider2D collision) {
             if (m_IsDead) return;
 
-            Debug.Log("Trigger Entered " + collision.gameObject.name);
+            //Debug.Log("Trigger Entered " + collision.gameObject.name);
 
             if (collision.CompareTag("Barrier")) {
                 Die();
