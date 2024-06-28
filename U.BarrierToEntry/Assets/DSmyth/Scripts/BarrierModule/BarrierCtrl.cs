@@ -18,40 +18,38 @@ namespace DSmyth.BarrierModule
         [ReadOnly, SerializeField] private float currentMouseXPosInPixels = Screen.width / 2;
 
 
-
+        private void OnEnable() {
+            StatesModule.GameStates.OnInitGameplay += OnInitGameplay;
+            StatesModule.GameStates.OnStartGameplay += OnStartGameplay;
+            StatesModule.GameStates.OnGameOver += OnGameOver;
+        }
+        private void OnDisable() {
+            StatesModule.GameStates.OnInitGameplay -= OnInitGameplay;
+            StatesModule.GameStates.OnStartGameplay -= OnStartGameplay;
+            StatesModule.GameStates.OnGameOver -= OnGameOver;
+        }
         private void Start() {
-            Cursor.lockState = CursorLockMode.Locked;
+            
 
-            // Move Barrier to its starting pos
-            m_Barrier.localPosition = new Vector3(0, -m_RotationRadius, 0);
+            
+        }
+        private void OnInitGameplay() {
+            m_Barrier.localPosition = new Vector3(0, -m_RotationRadius, 0); // Move Barrier to its starting pos
+        }
+        private void OnStartGameplay() {
+            Cursor.lockState = CursorLockMode.Locked;   // Lock the mouse when the gameplay starts
+        }
+        private void OnGameOver() {
+            Cursor.lockState = CursorLockMode.None;   // Unlock the mouse when the game is over
         }
 
         private void Update() {
-
             HandleBarrierMovement();
-
-            /* Old Code
-            //Keep the shield clamped to below the pivot point(i.e. 180 degrees of freedom)
-            if (m_Barrier.localPosition.y <= 0) {
-                float mouseInputDirection = Input.GetAxis("Mouse X"); // Gets the number of pixels the mouse has moved in the X axis since last frame (doesnt need to be multiplied by Time.deltaTime
-                m_Barrier.RotateAround(m_PivotPoint.position, Vector3.forward, mouseInputDirection * m_RotationSpeed);
-            }
-            else {
-                // Move the shield back into the clamp range
-                if (m_Barrier.localPosition.x < 0) {
-                    m_Barrier.localPosition = new Vector3(-m_RotationRadius, 0, 0);
-                    m_Barrier.localEulerAngles = new Vector3(0, 0, -90);
-                }
-                else {
-                    m_Barrier.localPosition = new Vector3(m_RotationRadius, 0, 0);
-                    m_Barrier.localEulerAngles = new Vector3(0, 0, 90);
-                }
-            }*/
-
         }
 
         //private Vector3 m_SmoothVelocityRef = Vector3.zero;
         private void HandleBarrierMovement() {
+            if (!StatesModule.GameStates.IsGamePlaying) return;
 
             // Get mouse X Input delta and add it to the currentMouseXPos
             float mouseXDelta = Input.GetAxis("Mouse X");

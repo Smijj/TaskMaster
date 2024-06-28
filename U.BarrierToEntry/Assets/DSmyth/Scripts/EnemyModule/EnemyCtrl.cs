@@ -20,19 +20,32 @@ namespace DSmyth.EnemyModule
         private RectTransform m_Target;
         private Vector2 m_StartPos;
 
+
+        #region Unity + Events
+
         private void Reset() {
             if (!m_Collider) m_Collider = GetComponent<Collider2D>();
-
         }
-
         public virtual void Awake() {
             m_TravelTimeCounter = 0;
             if (!m_Collider) m_Collider = GetComponent<Collider2D>();
         }
-
+        private void OnEnable() {
+            StatesModule.GameStates.OnGameOver += OnGameOver;
+        }
+        private void OnDisable() {
+            StatesModule.GameStates.OnGameOver -= OnGameOver;
+        }
         private void Update() {
             HandleEnemyMovement();
         }
+
+        private void OnGameOver() {
+            Die();  // Get rid of any remaining enemies when the game is over
+        }
+
+        #endregion
+
 
         public void SetTarget(RectTransform target, Vector2 spawnPos) {
             transform.position = spawnPos;
@@ -60,8 +73,6 @@ namespace DSmyth.EnemyModule
 
         private void OnTriggerEnter2D(Collider2D collision) {
             if (m_IsDead) return;
-
-            //Debug.Log("Trigger Entered " + collision.gameObject.name);
 
             if (collision.CompareTag("Barrier")) {
                 Die();

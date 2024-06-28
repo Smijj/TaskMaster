@@ -22,13 +22,44 @@ namespace DSmyth.EnemyModule
         [SerializeField] private float m_MaxSpawnCircumferenceRange = 1.85f;
 
 
-        //private List<EnemyCtrl> m_ActiveEnemies = new List<EnemyCtrl>();
+        private List<EnemyCtrl> m_ActiveEnemies = new List<EnemyCtrl>();
 
         [Header("Debug")]
         [SerializeField] private bool m_DrawGizmos = true;
 
 
+        #region Unity + Events
+
+        private void OnEnable() {
+            StatesModule.GameStates.OnInitGameplay += OnInitGameplay;
+            StatesModule.GameStates.OnStartGameplay += OnStartGameplay;
+            StatesModule.GameStates.OnGameOver += OnGameOver;
+        }
+        private void OnDisable() {
+            StatesModule.GameStates.OnInitGameplay -= OnInitGameplay;
+            StatesModule.GameStates.OnStartGameplay -= OnStartGameplay;
+            StatesModule.GameStates.OnGameOver -= OnGameOver;
+        }
         private void Update() {
+            HandleEnemies();
+        }
+
+        private void OnInitGameplay() {
+            
+        }
+        private void OnStartGameplay() {
+            
+        }
+        private void OnGameOver() {
+            
+        }
+
+        #endregion
+
+
+        private void HandleEnemies() {
+            if (!StatesModule.GameStates.IsGamePlaying) return;
+
             // Spawn Enemies every few seconds
             if (m_EnemySpawnTimeCounter > m_EnemySpawnTime) {
                 SpawnEnemy();
@@ -37,12 +68,12 @@ namespace DSmyth.EnemyModule
             m_EnemySpawnTimeCounter += Time.deltaTime;
         }
 
-
         [ContextMenu("SpawnEnemy")]
         private void SpawnEnemy() {
             Vector2 spawnPos = GetRandomPointAlongCircleCircumference(m_CenterPoint, m_EnemySpawnRadius, m_MinSpawnCircumferenceRange, m_MaxSpawnCircumferenceRange);
             EnemyCtrl enemyCtrl = Instantiate(m_EnemyPrefab, m_EnemyParent);
             enemyCtrl.SetTarget(m_CenterPoint, spawnPos);
+            m_ActiveEnemies.Add(enemyCtrl);
         }
 
         private Vector2 GetRandomPointAlongCircleCircumference(RectTransform circleOrigin, float radius, float circumferenceRangeMin = 0f, float circumferenceRangeMax = 2f) {

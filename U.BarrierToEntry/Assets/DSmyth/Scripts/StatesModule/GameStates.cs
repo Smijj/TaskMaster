@@ -4,8 +4,10 @@ namespace DSmyth.StatesModule
 {
     public static class GameStates
     {
-        public static Action OnPlayTransition;
-        public static Action OnGameplayInititalized;
+        public static bool IsGamePlaying;
+
+        public static Action OnInitGameplay;
+        public static Action OnStartGameplay;
         public static Action OnGameOver;
 
         /// <summary>

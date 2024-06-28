@@ -22,16 +22,38 @@ namespace DSmyth.TaskModule {
         private List<InputGlyphCtrl> m_InputGlyphs = new List<InputGlyphCtrl>();
         private bool m_ListenForInput = true;
 
-        private void Start() {
-            GenerateInputSequence();
+        #region Unity + Events
+
+        private void OnEnable() {
+            StatesModule.GameStates.OnInitGameplay += OnInitGameplay;
+            StatesModule.GameStates.OnStartGameplay += OnStartGameplay;
+            StatesModule.GameStates.OnGameOver += OnGameOver;
+        }
+        private void OnDisable() {
+            StatesModule.GameStates.OnInitGameplay -= OnInitGameplay;   
+            StatesModule.GameStates.OnStartGameplay -= OnStartGameplay;
+            StatesModule.GameStates.OnGameOver -= OnGameOver;
         }
 
         private void Update() {
             HandleTaskInput();
         }
 
+        private void OnInitGameplay() {
+            GenerateInputSequence();
+        }
+        private void OnStartGameplay() {
+            
+        }
+        private void OnGameOver() {
+            
+        }
+
+        #endregion
+
+
         private void HandleTaskInput() {
-            if (!m_ListenForInput) return;
+            if (!StatesModule.GameStates.IsGamePlaying || !m_ListenForInput) return;
 
             // check if any of the possible task inputs are being pressed
             // if one is, check if it matches the current index pos of the input sequence
@@ -100,24 +122,19 @@ namespace DSmyth.TaskModule {
             }
         }
         private void CompleteTask() {
-            m_ListenForInput = false;
+            m_ListenForInput = false;   // Stop TaskManager from listening for inputs until the next Input Seq is generated
             Debug.Log("Task Complete!");
-            // Invoke OnTaskCompleted event
-            StatesModule.TaskStates.OnTaskCompleted?.Invoke();
+
+            StatesModule.TaskStates.OnTaskCompleted?.Invoke();  // Invoke OnTaskCompleted event
             GenerateInputSequence();
         }
         private void FailTask() {
-            m_ListenForInput = false;
+            m_ListenForInput = false;   // Stop TaskManager from listening for inputs until the next Input Seq is generated
             Debug.Log("Task Failed...");
 
-            // Invoke OnTaskFailed event
-            StatesModule.TaskStates.OnTaskFailed?.Invoke();
-            // Highlight Key that the player failed on red
-            m_InputGlyphs[m_CurrentInputSequenceIndex].SetImageColour(m_ColourInputIncorrect);
-            // Wait 0.5s, then Reset InputSequence
-            Invoke("GenerateInputSequence", 0.5f);
-            //LeanTween.delayedCall(gameObject, 0.5f, GenerateInputSequence);
+            StatesModule.TaskStates.OnTaskFailed?.Invoke();                                     // Invoke OnTaskFailed event
+            m_InputGlyphs[m_CurrentInputSequenceIndex].SetImageColour(m_ColourInputIncorrect);  // Highlight Key that the player failed on red
+            Invoke("GenerateInputSequence", 0.5f);                                              // Wait 0.5s, then Reset InputSequence
         }
-
     }
 }
