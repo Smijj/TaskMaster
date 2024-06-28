@@ -8,7 +8,9 @@ namespace DSmyth.GameStateModule
     {
         [Header("Config Settings")]
         [SerializeField] private int m_MaxHealth = 100;
-        [SerializeField] private int m_TaskCompletedHealAmount = 5;
+        [SerializeField] private int m_HealAmountTaskCompleted = 3;
+        [SerializeField] private int m_ScoreAmountTaskCompleted = 10;
+        [SerializeField] private int m_ScoreAmountEnemyDestroyed = 5;
 
 
         [Header("Game Data")]
@@ -68,8 +70,8 @@ namespace DSmyth.GameStateModule
         /// Increase Current Score when a task is completed. Also Refill the Players Health by a small amount.
         /// </summary>
         private void OnTaskCompleted() {
-            CurrentScore++;
-            CurrentHealth += m_TaskCompletedHealAmount;
+            CurrentScore += m_ScoreAmountTaskCompleted;
+            CurrentHealth += m_HealAmountTaskCompleted;
             if (CurrentScore > StorageModule.DataHandler.SaveData.HighScore) {
                 StorageModule.DataHandler.SaveData.HighScore = CurrentScore;
             }
