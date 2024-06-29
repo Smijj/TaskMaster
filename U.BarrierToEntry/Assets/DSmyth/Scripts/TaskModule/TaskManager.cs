@@ -16,7 +16,6 @@ namespace DSmyth.TaskModule
 
         [Header("References")]
         [SerializeField] private InputGlyphCtrl m_InputGlyph;
-        //[SerializeField] private Transform m_InputGlyphContainer;
         [SerializeField] private List<InputGlyph> m_PossibleTaskInputs = new List<InputGlyph>();
 
         [Header("Debug")]

@@ -1775,6 +1775,7 @@ Transform:
   - {fileID: 814628131}
   - {fileID: 310991900}
   - {fileID: 1423688140}
+  - {fileID: 1136045536}
   m_Father: {fileID: 1013390260}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2239,6 +2240,57 @@ MonoBehaviour:
   m_ScoreAmountEnemyDestroyed: 5
   m_CurrentHealth: 100
   m_CurrentScore: 0
+--- !u!1 &1136045535
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1136045536}
+  - component: {fileID: 1136045537}
+  m_Layer: 0
+  m_Name: TaskPulseEffectCtrl
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1136045536
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136045535}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 825365014}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1136045537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136045535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dad629dd17431094aa5f488b88b6e5c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PulseScale: 1.75
+  m_PulseAnimTime: 1.25
+  m_PulseColour: {r: 0.9716981, g: 0.80417466, b: 0.068752214, a: 1}
+  m_ScaleEase: 21
+  m_FadeEase: 9
+  m_PulseParent: {fileID: 1737961190}
+  m_PulseUIPrefab: {fileID: 8349062737955214758, guid: e8fff5656164b5a478ec475617d32758, type: 3}
 --- !u!1 &1146871332
 GameObject:
   m_ObjectHideFlags: 0
