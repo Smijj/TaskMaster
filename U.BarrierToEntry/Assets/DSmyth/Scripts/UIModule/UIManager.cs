@@ -8,23 +8,28 @@ namespace DSmyth.UIModule
     public class UIManager : MonoBehaviour
     {
         [Header("Settings")]
-        [SerializeField] private float m_BGMoveAnimTime = 1f;
-        [SerializeField] private LeanTweenType m_BGMoveEase = LeanTweenType.linear;
+        [SerializeField] private float m_UIFadeTime = 0.25f;
+        [SerializeField] private LeanTweenType m_UIFadeEase = LeanTweenType.easeInQuad;
+        [SerializeField] private float m_BGMoveAnimTime = 0.5f;
+        [SerializeField] private LeanTweenType m_BGMoveEase = LeanTweenType.easeInCubic;
         [SerializeField] private float m_BGScaleAnimTime = 1f;
-        [SerializeField] private LeanTweenType m_BGScaleEase = LeanTweenType.linear;
-        [SerializeField] private float m_BGRotateAnimTime = 1f;
-        [SerializeField] private LeanTweenType m_BGRotateEase = LeanTweenType.linear;
+        [SerializeField] private LeanTweenType m_BGScaleEase = LeanTweenType.easeOutBounce;
+        [SerializeField] private float m_BGRotateAnimTime = 1.5f;
+        [SerializeField] private LeanTweenType m_BGRotateEase = LeanTweenType.easeOutBounce;
+
         [Header("References")]
         [SerializeField] private RectTransformTweenCtrl m_HeadBGCtrl;
-        [SerializeField] private List<RectTransform> m_MenuUIElements = new List<RectTransform>();
-        [SerializeField] private List<RectTransform> m_GameplayUIElements = new List<RectTransform>();
+        [SerializeField] private CanvasGroupTweenCtrl[] m_MenuUIElements;
+        [SerializeField] private CanvasGroupTweenCtrl[] m_GameplayUIElements;
+        [SerializeField] private CanvasGroupTweenCtrl[] m_BrainUIElements;
 
         #region Unity + Events
 
         private void Start() {
             TransformBGToMenuPos(null, false);
-            SetUIElementsActiveState(m_MenuUIElements.ToArray(), true);
-            SetUIElementsActiveState(m_GameplayUIElements.ToArray(), false);
+            SetUIElementsActiveState(m_MenuUIElements, true, false);
+            SetUIElementsActiveState(m_BrainUIElements, false, false);
+            SetUIElementsActiveState(m_GameplayUIElements, false, false);
         }
         private void OnEnable() {
             StatesModule.GameStates.OnInitGameplay += OnInitGameplay;
@@ -36,6 +41,7 @@ namespace DSmyth.UIModule
             StatesModule.GameStates.OnStartGameplay -= OnStartGameplay;
             StatesModule.GameStates.OnGameOver -= OnGameOver;
         }
+#if UNITY_EDITOR
         private void Update() {
             if (Input.GetKeyDown(KeyCode.Alpha1)) {
                 TransformBGToGameplayPos();
@@ -44,36 +50,44 @@ namespace DSmyth.UIModule
                 TransformBGToMenuPos();
             }
         }
+#endif
 
         private void OnInitGameplay() {
-            // Hide Menu UI
-            SetUIElementsActiveState(m_MenuUIElements.ToArray(), false);
-            // Transform BG to Gamplay Pos
-            TransformBGToGameplayPos(() => StatesModule.GameStates.OnStartGameplay?.Invoke());
+            SetUIElementsActiveState(m_MenuUIElements, false);  // Hide Menu UI
+            SetUIElementsActiveState(m_BrainUIElements, true);  // Fade In Brain UI
+            TransformBGToGameplayPos(() => StatesModule.GameStates.OnStartGameplay?.Invoke());  // Transform BG to Gamplay Pos
         }
         private void OnStartGameplay() {
-            // Show Gameplay UI
-            SetUIElementsActiveState(m_GameplayUIElements.ToArray(), true);
+            SetUIElementsActiveState(m_GameplayUIElements, true);   // Show Gameplay UI
         }
-        [ContextMenu("Test")]
         private void OnGameOver() {
-            // Hide Gameplay UI
-            SetUIElementsActiveState(m_GameplayUIElements.ToArray(), false);
-            // Transform BG to Menu Pos
-            TransformBGToMenuPos(() => SetUIElementsActiveState(m_MenuUIElements.ToArray(), true));
+            SetUIElementsActiveState(m_GameplayUIElements, false);  // Hide Gameplay UI
+            SetUIElementsActiveState(m_BrainUIElements, false);  // Fade Out Brain 
+            TransformBGToMenuPos(() => SetUIElementsActiveState(m_MenuUIElements, true));   // Transform BG to Menu Pos
         }
 
         #endregion
 
-        public void StartGame() {
-            StatesModule.GameStates.OnInitGameplay?.Invoke();
-        }
-
-        private void SetUIElementsActiveState(RectTransform[] elements, bool activeState) {
+        private void SetUIElementsActiveState(CanvasGroupTweenCtrl[] elements, bool activeState, bool animate = true) {
             if (elements == null || elements.Length.Equals(0)) return;
 
             foreach (var element in elements) {
-                element.gameObject.SetActive(activeState);
+                if (!animate) {
+                    element.gameObject.SetActive(activeState);
+                    continue;
+                }
+
+                if (activeState) {
+                    element.SetAlpha(0);    // Make sure the alpha of the UI is 0 before the FadeIn
+                    element.gameObject.SetActive(true);  // Make sure the UI element is active
+                    element.AnimAlpha(0, 1, m_UIFadeTime)       // Then animate it in
+                        .setEase(m_UIFadeEase);      
+                } else {
+                    element.gameObject.SetActive(true);  // Make sure the UI element is active before the FadeOut 
+                    element.AnimAlpha(1, 0, m_UIFadeTime)   // Animate the UI element out, then disable it
+                        .setEase(m_UIFadeEase)
+                        .setOnComplete(() => element.gameObject.SetActive(false));
+                }
             }
         }
 

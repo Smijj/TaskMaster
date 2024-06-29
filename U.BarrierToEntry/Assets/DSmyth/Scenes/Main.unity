@@ -470,8 +470,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -17.86}
-  m_SizeDelta: {x: 122.88, y: 12.660004}
+  m_AnchoredPosition: {x: 0, y: -15}
+  m_SizeDelta: {x: 150, y: 15}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &303059357
 GameObject:
@@ -606,6 +606,7 @@ GameObject:
   - component: {fileID: 318611088}
   - component: {fileID: 318611087}
   - component: {fileID: 318611086}
+  - component: {fileID: 318611090}
   - component: {fileID: 318611089}
   m_Layer: 5
   m_Name: BarrierCanvas
@@ -708,6 +709,19 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &318611090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 318611084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59cfe4e15c598f74d84843386a99f0b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CvsGrp: {fileID: 318611089}
 --- !u!1 &372140783
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,7 +760,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.83}
   m_AnchorMax: {x: 0.5, y: 0.83}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
+  m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &459565259
 GameObject:
@@ -1136,9 +1150,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 601400644}
+  - component: {fileID: 601400649}
   - component: {fileID: 601400646}
   - component: {fileID: 601400645}
   - component: {fileID: 601400647}
+  - component: {fileID: 601400648}
   m_Layer: 5
   m_Name: ImgBrain
   m_TagString: Untagged
@@ -1219,6 +1235,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 1
   m_AspectRatio: 1.6969697
+--- !u!225 &601400648
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601400643}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &601400649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601400643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59cfe4e15c598f74d84843386a99f0b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CvsGrp: {fileID: 601400648}
 --- !u!1 &602356617
 GameObject:
   m_ObjectHideFlags: 0
@@ -1432,7 +1473,7 @@ MonoBehaviour:
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -1749,6 +1790,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b94542592883f05489c220135d79ae64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_UIFadeTime: 0.25
+  m_UIFadeEase: 3
   m_BGMoveAnimTime: 0.5
   m_BGMoveEase: 5
   m_BGScaleAnimTime: 1
@@ -1757,10 +1800,12 @@ MonoBehaviour:
   m_BGRotateEase: 24
   m_HeadBGCtrl: {fileID: 71121131}
   m_MenuUIElements:
-  - {fileID: 1968394765}
+  - {fileID: 1968394770}
   m_GameplayUIElements:
-  - {fileID: 318611085}
-  - {fileID: 2032730434}
+  - {fileID: 318611090}
+  - {fileID: 2032730439}
+  m_BrainUIElements:
+  - {fileID: 601400649}
 --- !u!1 &857843405
 GameObject:
   m_ObjectHideFlags: 0
@@ -1883,7 +1928,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 9.7
+  m_fontSize: 11.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2462,8 +2507,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 825365015}
-        m_TargetAssemblyTypeName: DSmyth.UIModule.UIManager, DSmyth.UIModule
+      - m_Target: {fileID: 1130837229}
+        m_TargetAssemblyTypeName: DSmyth.GameStateModule.GameStateManager, DSmyth.GameStateModule
         m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
@@ -3535,7 +3580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.10615741, b: 0, a: 1}
+  m_Color: {r: 0.754717, g: 0.07991122, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3547,7 +3592,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 1
+  m_FillAmount: 0.515
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -3726,6 +3771,7 @@ GameObject:
   - component: {fileID: 1968394768}
   - component: {fileID: 1968394767}
   - component: {fileID: 1968394766}
+  - component: {fileID: 1968394770}
   - component: {fileID: 1968394769}
   m_Layer: 5
   m_Name: MenuUI
@@ -3828,6 +3874,19 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1968394770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968394764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59cfe4e15c598f74d84843386a99f0b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CvsGrp: {fileID: 1968394769}
 --- !u!1 &2032730433
 GameObject:
   m_ObjectHideFlags: 0
@@ -3840,6 +3899,7 @@ GameObject:
   - component: {fileID: 2032730437}
   - component: {fileID: 2032730436}
   - component: {fileID: 2032730435}
+  - component: {fileID: 2032730439}
   - component: {fileID: 2032730438}
   m_Layer: 5
   m_Name: TaskCanvas
@@ -3942,6 +4002,19 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &2032730439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2032730433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59cfe4e15c598f74d84843386a99f0b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CvsGrp: {fileID: 2032730438}
 --- !u!1 &2044198751
 GameObject:
   m_ObjectHideFlags: 0

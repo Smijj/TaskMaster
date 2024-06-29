@@ -39,8 +39,9 @@ namespace DSmyth.GameStateModule
         }
 
 
-        private void OnEnable() {
+        #region Unity + Events
 
+        private void OnEnable() {
             StatesModule.GameStates.OnInitGameplay += OnInitGameplay;
             StatesModule.GameStates.OnStartGameplay += OnStartGameplay;
             StatesModule.GameStates.OnGameOver += OnGameOver;
@@ -57,6 +58,11 @@ namespace DSmyth.GameStateModule
             StatesModule.EnemyStates.OnDistractionSucessful -= OnDistractionSucessful;
             StatesModule.TaskStates.OnTaskCompleted -= OnTaskCompleted;
             StatesModule.TaskStates.OnTaskFailed -= OnTaskFailed;
+        }
+        private void Update() {
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                StopGame();
+            }
         }
 
         private void OnInitGameplay() {
@@ -89,6 +95,17 @@ namespace DSmyth.GameStateModule
         }
         private void OnTaskFailed() {
             CurrentHealth -= m_DamageAmountTaskFailed;
+        }
+
+        #endregion
+
+
+        public void StartGame() {
+            StatesModule.GameStates.OnInitGameplay?.Invoke();
+        }
+        public void StopGame() {
+            StatesModule.GameStates.OnGameOver?.Invoke();
+
         }
     }
 }
