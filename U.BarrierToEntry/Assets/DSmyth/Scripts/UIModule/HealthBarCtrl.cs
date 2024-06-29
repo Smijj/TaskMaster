@@ -14,9 +14,11 @@ namespace DSmyth.UIModule
             InitHeatlhBar();
         }
         private void OnEnable() {
+            StatesModule.GameStates.OnInitGameplay += InitHeatlhBar;
             StatesModule.GameStates.OnHealthChanged += SetHealthBar;
         }
         private void OnDisable() {
+            StatesModule.GameStates.OnInitGameplay -= InitHeatlhBar;
             StatesModule.GameStates.OnHealthChanged -= SetHealthBar;
         }
 

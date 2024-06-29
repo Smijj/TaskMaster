@@ -13,17 +13,23 @@ namespace DSmyth.UIModule
         [SerializeField] private float m_ScorePulseOutTime = 0.2f;
 
         private void Awake() {
-            SetScore(0, false);
+            InitScore();
         }
         private void OnEnable() {
+            StatesModule.GameStates.OnInitGameplay += InitScore;
             StatesModule.GameStates.OnScoreChanged += OnScoreChanged;
         }
         private void OnDisable() {
+            StatesModule.GameStates.OnInitGameplay -= InitScore;
             StatesModule.GameStates.OnScoreChanged -= OnScoreChanged;
         }
 
         private void OnScoreChanged(int score) {
             SetScore(score);
+        }
+
+        private void InitScore() {
+            SetScore(0, false);
         }
 
         private void SetScore(int score, bool animate = true) {
