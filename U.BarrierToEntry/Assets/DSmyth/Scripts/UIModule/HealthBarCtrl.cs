@@ -7,7 +7,7 @@ namespace DSmyth.UIModule
 {
     public class HealthBarCtrl : MonoBehaviour
     {
-        [SerializeField] private Image m_FillImage;
+        [SerializeField] private Slider m_FillSlider;
 
 
         private void Awake() {
@@ -23,13 +23,13 @@ namespace DSmyth.UIModule
         }
 
         private void InitHeatlhBar() {
-            if (!m_FillImage) return;
+            if (!m_FillSlider) return;
             // Init fill max to max health
-            m_FillImage.fillAmount = 1;
+            m_FillSlider.value = 1;
         }
         private void SetHealthBar(float healthPercentage) {
-            if (!m_FillImage) return;
-            m_FillImage.fillAmount = healthPercentage;
+            if (!m_FillSlider) return;
+            m_FillSlider.value = healthPercentage;
         }
     }
 }
