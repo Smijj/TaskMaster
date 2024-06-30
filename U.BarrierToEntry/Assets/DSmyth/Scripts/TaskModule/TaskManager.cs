@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DSmyth.TaskModule
 {
@@ -8,17 +9,21 @@ namespace DSmyth.TaskModule
     {
 
         [Header("Settings")]
+        [SerializeField] private float m_TaskTimeoutTime = 5f;
+        [SerializeField] private Gradient m_TimeoutGradient;
+        [SerializeField] private float m_ResetDelayTaskCorrect = 0.15f;
+        [SerializeField] private float m_ResetDelayTaskFailed = 0.5f;
         [SerializeField] private Color m_ColourCurrentTask = Color.yellow;
         [SerializeField] private Color m_ColourInputCorrect = Color.green;
         [SerializeField] private Color m_ColourInputFailed = Color.red;
-        [SerializeField] private float m_ResetDelayTaskCorrect = 0.15f;
-        [SerializeField] private float m_ResetDelayTaskFailed = 0.5f;
+        [SerializeField] private List<InputGlyph> m_PossibleTaskInputs = new List<InputGlyph>();
 
         [Header("References")]
         [SerializeField] private InputGlyphCtrl m_InputGlyph;
-        [SerializeField] private List<InputGlyph> m_PossibleTaskInputs = new List<InputGlyph>();
+        [SerializeField] private Image m_ImgTimeoutUI;
 
         [Header("Debug")]
+        [ReadOnly, SerializeField] private float m_TaskTimeoutCounter = 0f;
         [SerializeField] private InputGlyph m_CurrentTask;
 
         private bool m_ListenForInput = true;
@@ -39,6 +44,7 @@ namespace DSmyth.TaskModule
 
         private void Update() {
             HandleTaskInput();
+            HandleTaskTimeout();
         }
 
         private void OnInitGameplay() {
@@ -53,6 +59,23 @@ namespace DSmyth.TaskModule
 
         #endregion
 
+        private void HandleTaskTimeout() {
+            if (!StatesModule.GameStates.IsGamePlaying || !m_ListenForInput) return;    // Counter wont count down in the delay before generating a new Task
+
+            m_TaskTimeoutCounter -= Time.deltaTime;
+            if (m_TaskTimeoutCounter <= 0) {
+                // Timeout Task
+                FailTask();
+                m_TaskTimeoutCounter = m_TaskTimeoutTime;   // Also gets reset in the GenerateTask func but oh well *Redundancy*
+                return;     // Return here to not update the TimeoutUI until the new Task has been generated
+            }
+
+            if (m_ImgTimeoutUI) {
+                float percentage = m_TaskTimeoutCounter / m_TaskTimeoutTime;
+                m_ImgTimeoutUI.fillAmount = percentage;
+                m_ImgTimeoutUI.color = m_TimeoutGradient.Evaluate(percentage);
+            }
+        }
 
         private void HandleTaskInput() {
             if (!StatesModule.GameStates.IsGamePlaying || !m_ListenForInput) return;
@@ -78,11 +101,8 @@ namespace DSmyth.TaskModule
             Debug.Log("Task Complete!");
 
             StatesModule.TaskStates.OnTaskCompleted?.Invoke();  // Invoke OnTaskCompleted event
-
-            // Do some sort of effect & change the colour of the InputGlyph
-            m_InputGlyph.SetImageColour(m_ColourInputCorrect);
-
-            Invoke("GenerateTask", m_ResetDelayTaskCorrect);        // Wait 0.5s, then Reset InputSequence
+            m_InputGlyph.SetImageColour(m_ColourInputCorrect);  // Change the colour of the InputGlyph
+            Invoke("GenerateTask", m_ResetDelayTaskCorrect);    // Wait 0.5s, then Reset InputSequence
         }
         private void FailTask() {
             m_ListenForInput = false;   // Stop TaskManager from listening for inputs until the next Input Seq is generated
@@ -101,6 +121,8 @@ namespace DSmyth.TaskModule
             m_CurrentTask = m_PossibleTaskInputs[Random.Range(0, m_PossibleTaskInputs.Count)];
             m_InputGlyph.SetImageSprite(m_CurrentTask.Sprite);
             m_InputGlyph.SetImageColour(m_ColourCurrentTask);
+
+            m_TaskTimeoutCounter = m_TaskTimeoutTime;           // Reset Timeout counter
 
             m_ListenForInput = true;
         }
