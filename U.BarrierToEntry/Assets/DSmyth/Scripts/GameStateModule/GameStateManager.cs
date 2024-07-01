@@ -8,6 +8,7 @@ namespace DSmyth.GameStateModule
     {
         [Header("Config Settings")]
         [SerializeField] private int m_MaxHealth = 100;
+        [SerializeField] private float m_TimeToMaxDifficulty = 120;     // After 2 minutes the game should be as hard as its going to get
         [SerializeField] private int m_DamageAmountTaskFailed = 10;
         [SerializeField] private int m_HealAmountTaskCompleted = 3;
         [SerializeField] private int m_ScoreAmountTaskCompleted = 10;
@@ -38,6 +39,8 @@ namespace DSmyth.GameStateModule
             }
         }
 
+        [ReadOnly, SerializeField] private float m_ElapsedGameTime = 0;
+
 
         #region Unity + Events
 
@@ -63,11 +66,26 @@ namespace DSmyth.GameStateModule
             if (Input.GetKeyDown(KeyCode.Escape)) {
                 StopGame();
             }
+
+            HandleDifficulty();
         }
+        private void HandleDifficulty() {
+            if (!StatesModule.GameStates.IsGamePlaying || m_ElapsedGameTime >= m_TimeToMaxDifficulty) return;
+            
+            // Increase the current playtime if the game is actively playing
+            m_ElapsedGameTime += Time.deltaTime;
+            if (m_ElapsedGameTime >= m_TimeToMaxDifficulty) {
+                StatesModule.GameStates.OnDifficultyChanged?.Invoke(1);
+                return;
+            }
+            StatesModule.GameStates.OnDifficultyChanged?.Invoke(m_ElapsedGameTime / m_TimeToMaxDifficulty);
+        }
+
 
         private void OnInitGameplay() {
             m_CurrentHealth = m_MaxHealth;
             m_CurrentScore = 0;
+            m_ElapsedGameTime = 0;
         }
         private void OnStartGameplay() {
             StatesModule.GameStates.IsGamePlaying = true;

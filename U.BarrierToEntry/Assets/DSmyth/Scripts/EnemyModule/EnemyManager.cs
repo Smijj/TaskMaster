@@ -13,7 +13,9 @@ namespace DSmyth.EnemyModule
         [SerializeField] private RectTransform m_CenterPoint;
         
         [Header("Enemy Settings")]
-        [SerializeField] private float m_EnemySpawnTime = 2f;
+        [SerializeField] private float m_MinEnemySpawnTime = 0.3f;
+        [SerializeField] private float m_MaxEnemySpawnTime = 3f;
+        [ReadOnly, SerializeField] private float m_CurrentEnemySpawnTime = 3f;
         private float m_EnemySpawnTimeCounter = 0;
         
         [Header("Spawn Position Settings")]
@@ -30,28 +32,21 @@ namespace DSmyth.EnemyModule
 
         #region Unity + Events
 
+        private void Awake() {
+            m_CurrentEnemySpawnTime = m_MaxEnemySpawnTime;
+        }
         private void OnEnable() {
-            StatesModule.GameStates.OnInitGameplay += OnInitGameplay;
-            StatesModule.GameStates.OnStartGameplay += OnStartGameplay;
-            StatesModule.GameStates.OnGameOver += OnGameOver;
+            StatesModule.GameStates.OnDifficultyChanged += OnDifficultyChanged;
         }
         private void OnDisable() {
-            StatesModule.GameStates.OnInitGameplay -= OnInitGameplay;
-            StatesModule.GameStates.OnStartGameplay -= OnStartGameplay;
-            StatesModule.GameStates.OnGameOver -= OnGameOver;
+            StatesModule.GameStates.OnDifficultyChanged -= OnDifficultyChanged;
         }
         private void Update() {
             HandleEnemies();
         }
 
-        private void OnInitGameplay() {
-            
-        }
-        private void OnStartGameplay() {
-            
-        }
-        private void OnGameOver() {
-            
+        private void OnDifficultyChanged(float difficultyPercentage) {
+            m_CurrentEnemySpawnTime = Mathf.Lerp(m_MaxEnemySpawnTime, m_MinEnemySpawnTime, difficultyPercentage);
         }
 
         #endregion
@@ -61,7 +56,7 @@ namespace DSmyth.EnemyModule
             if (!StatesModule.GameStates.IsGamePlaying) return;
 
             // Spawn Enemies every few seconds
-            if (m_EnemySpawnTimeCounter > m_EnemySpawnTime) {
+            if (m_EnemySpawnTimeCounter > m_CurrentEnemySpawnTime) {
                 SpawnEnemy();
                 m_EnemySpawnTimeCounter = 0;
             }

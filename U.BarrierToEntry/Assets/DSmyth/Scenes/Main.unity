@@ -2422,12 +2422,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MaxHealth: 100
+  m_TimeToMaxDifficulty: 120
   m_DamageAmountTaskFailed: 10
   m_HealAmountTaskCompleted: 3
   m_ScoreAmountTaskCompleted: 10
   m_ScoreAmountEnemyDestroyed: 5
   m_CurrentHealth: 100
   m_CurrentScore: 0
+  m_ElapsedGameTime: 0
 --- !u!1 &1136045535
 GameObject:
   m_ObjectHideFlags: 0
@@ -3337,7 +3339,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5389e5ead9a3d7c44a23f9034ef5480e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TaskTimeoutTime: 6
+  m_MaxTaskTimeoutTime: 6
+  m_MinTaskTimeoutTime: 0.5
   m_TimeoutGradient:
     serializedVersion: 2
     key0: {r: 0.72156864, g: 0, b: 0.023529412, a: 1}
@@ -3367,6 +3370,8 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
+  m_CurrentTaskTimeoutTime: 5
+  m_TaskTimeoutCounter: 0
   m_ResetDelayTaskCorrect: 0.15
   m_ResetDelayTaskFailed: 0.5
   m_ColourCurrentTask: {r: 1, g: 1, b: 1, a: 1}
@@ -3383,7 +3388,6 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: f634c0116b22dd848a527104bb871df3, type: 3}
   m_InputGlyph: {fileID: 1737961191}
   m_ImgTimeoutUI: {fileID: 1883347106}
-  m_TaskTimeoutCounter: 0
   m_CurrentTask:
     KeyCode: 0
     Sprite: {fileID: 0}
@@ -4488,7 +4492,9 @@ MonoBehaviour:
   m_EnemyParent: {fileID: 642709247}
   m_EnemyPrefab: {fileID: 4049984822431600018, guid: 9b3a6cf188478ad409b4e1691c092d7b, type: 3}
   m_CenterPoint: {fileID: 1831298222}
-  m_EnemySpawnTime: 2
+  m_MinEnemySpawnTime: 0.3
+  m_MaxEnemySpawnTime: 3
+  m_CurrentEnemySpawnTime: 3
   m_EnemySpawnRadius: 15
   m_MinSpawnCircumferenceRange: 1.15
   m_MaxSpawnCircumferenceRange: 1.85

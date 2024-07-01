@@ -15,5 +15,9 @@ namespace DSmyth.StatesModule
         /// </summary>
         public static Action<float> OnHealthChanged;
         public static Action<int> OnScoreChanged;
+        /// <summary>
+        /// Returns a percentage between 0 and 1 that can be used to determine the current difficulty level.
+        /// </summary>
+        public static Action<float> OnDifficultyChanged;
     }
 }
