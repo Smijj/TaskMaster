@@ -53,8 +53,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f7efb7ceed688b4cb5cf12bf9c4a48c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TravelTime: 4
-  m_TravelTimeCounter: 0
+  m_TravelTime: 3
+  m_EnemyDamage: 10
+  m_Initialized: 0
+  m_Collider: {fileID: 6107213937650146490}
+  m_DistractionSucessfullVFX: {fileID: 8189375779078641272, guid: b06e13ed11f313141b8aa41e03b985a2, type: 3}
 --- !u!222 &7131968245423711964
 CanvasRenderer:
   m_ObjectHideFlags: 0

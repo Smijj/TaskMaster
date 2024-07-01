@@ -15,6 +15,7 @@ namespace DSmyth.EnemyModule
         
         [Header("References")]
         [SerializeField] protected Collider2D m_Collider;
+        [SerializeField] protected ParticleSystem m_DistractionSucessfullVFX;
 
         protected bool m_IsDead = false;
         private RectTransform m_Target;
@@ -85,7 +86,11 @@ namespace DSmyth.EnemyModule
             else if (collision.CompareTag("ProtectionArea")) {
                 // Reduce player health
                 StatesModule.EnemyStates.OnDistractionSucessful?.Invoke(m_EnemyDamage);
-                Die();
+                // Instantiate VFX
+                if (m_DistractionSucessfullVFX) Instantiate(m_DistractionSucessfullVFX, transform.position, transform.rotation, transform.parent.transform);
+                //Die();
+                m_IsDead = true;
+                DestroyThis();
             }
         }
     }
