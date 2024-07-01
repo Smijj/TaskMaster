@@ -75,9 +75,14 @@ namespace DSmyth.EnemyModule
             if (m_IsDead) return;
 
             if (collision.CompareTag("Barrier")) {
+                StatesModule.EnemyStates.OnDistractionBlocked?.Invoke();  
                 Die();
             }
-            if (collision.CompareTag("ProtectionArea")) {
+            else if (collision.CompareTag("Projectile")) {
+                StatesModule.EnemyStates.OnDistractionDestroyed?.Invoke();  // Give player points for actively shooting down a distraction
+                Die();
+            }
+            else if (collision.CompareTag("ProtectionArea")) {
                 // Reduce player health
                 StatesModule.EnemyStates.OnDistractionSucessful?.Invoke(m_EnemyDamage);
                 Die();

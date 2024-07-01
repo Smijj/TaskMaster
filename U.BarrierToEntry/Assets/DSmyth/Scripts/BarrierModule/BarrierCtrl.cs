@@ -6,13 +6,21 @@ namespace DSmyth.BarrierModule
 {
     public class BarrierCtrl : MonoBehaviour
     {
-        [Header("Settings")]
+        [Header("Barrier Movement Settings")]
         [SerializeField] private float m_RotationSpeed = 20;
         [SerializeField] private float m_RotationRadius = 155;
+        [Header("Barrier Shooting Settings")]
+        [SerializeField] private float m_ProjectileSpeed = 5f;
+        [SerializeField] private float m_ProjectileLifetime = 3f;
+        [SerializeField] private float m_ShootCooldown = 0.25f;
+        [ReadOnly, SerializeField] private float m_ShootCooldownCounter = 0;
+        [ReadOnly, SerializeField] private bool m_CanShoot = false;
         
         [Header("References")]
         [SerializeField] private RectTransform m_PivotPoint;
         [SerializeField] private RectTransform m_Barrier;
+        [SerializeField] private RectTransform m_ProjectilesParent;
+        [SerializeField] private ProjectileCtrl m_ProjectilePrefab;
 
         [Header("Debug")]
         [ReadOnly, SerializeField] private float currentMouseXPosInPixels = Screen.width / 2;
@@ -28,11 +36,6 @@ namespace DSmyth.BarrierModule
             StatesModule.GameStates.OnStartGameplay -= OnStartGameplay;
             StatesModule.GameStates.OnGameOver -= OnGameOver;
         }
-        private void Start() {
-            
-
-            
-        }
         private void OnInitGameplay() {
             m_Barrier.localPosition = new Vector3(0, -m_RotationRadius, 0); // Move Barrier to its starting pos
         }
@@ -45,9 +48,27 @@ namespace DSmyth.BarrierModule
 
         private void Update() {
             HandleBarrierMovement();
+            HandleBarrierShooting();
         }
 
-        //private Vector3 m_SmoothVelocityRef = Vector3.zero;
+        private void HandleBarrierShooting() {
+            if (!StatesModule.GameStates.IsGamePlaying || !m_ProjectilePrefab) return;
+
+            if (m_ShootCooldownCounter > 0) {
+                m_ShootCooldownCounter -= Time.deltaTime;
+            } else {
+                m_CanShoot = true;
+            }
+
+            // On mouse click, instantiate a projectile that shoots out
+            if (m_CanShoot && Input.GetMouseButton(0)) {
+                var projectile = Instantiate(m_ProjectilePrefab, m_Barrier.position, m_Barrier.rotation, m_ProjectilesParent);
+                projectile.ShootProjectile(-m_Barrier.transform.up * m_ProjectileSpeed, m_ProjectileLifetime);
+
+                m_CanShoot = false;
+                m_ShootCooldownCounter = m_ShootCooldown;
+            }
+        }
         private void HandleBarrierMovement() {
             if (!StatesModule.GameStates.IsGamePlaying) return;
 

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Barrier
   - ProtectionArea
+  - Projectile
   layers:
   - Default
   - TransparentFX

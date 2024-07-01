@@ -35,7 +35,10 @@ namespace DSmyth.GameStateModule
             get => m_CurrentScore;
             private set {
                 m_CurrentScore = value;
-                StatesModule.GameStates.OnScoreChanged?.Invoke(value);
+                if (m_CurrentScore > StorageModule.DataHandler.SaveData.HighScore) {
+                    StorageModule.DataHandler.SaveData.HighScore = m_CurrentScore;
+                }
+                StatesModule.GameStates.OnScoreChanged?.Invoke(m_CurrentScore);
             }
         }
 
@@ -50,6 +53,7 @@ namespace DSmyth.GameStateModule
             StatesModule.GameStates.OnGameOver += OnGameOver;
 
             StatesModule.EnemyStates.OnDistractionSucessful += OnDistractionSucessful;
+            StatesModule.EnemyStates.OnDistractionDestroyed += OnDistractionDestroyed;
             StatesModule.TaskStates.OnTaskCompleted += OnTaskCompleted;
             StatesModule.TaskStates.OnTaskFailed += OnTaskFailed;
         }
@@ -59,6 +63,7 @@ namespace DSmyth.GameStateModule
             StatesModule.GameStates.OnGameOver -= OnGameOver;
 
             StatesModule.EnemyStates.OnDistractionSucessful -= OnDistractionSucessful;
+            StatesModule.EnemyStates.OnDistractionDestroyed -= OnDistractionDestroyed;
             StatesModule.TaskStates.OnTaskCompleted -= OnTaskCompleted;
             StatesModule.TaskStates.OnTaskFailed -= OnTaskFailed;
         }
@@ -100,6 +105,12 @@ namespace DSmyth.GameStateModule
         private void OnDistractionSucessful(int enemyDamage) {
             CurrentHealth -= enemyDamage;
         }
+        /// <summary>
+        /// If the distraction has been destroyed by the player shooting a projectile at it increase the score by an amount
+        /// </summary>
+        private void OnDistractionDestroyed() {
+            CurrentScore += m_ScoreAmountEnemyDestroyed;
+        }
 
         /// <summary>
         /// Increase Current Score when a task is completed. Also Refill the Players Health by a small amount.
@@ -107,9 +118,6 @@ namespace DSmyth.GameStateModule
         private void OnTaskCompleted() {
             CurrentScore += m_ScoreAmountTaskCompleted;
             CurrentHealth += m_HealAmountTaskCompleted;
-            if (CurrentScore > StorageModule.DataHandler.SaveData.HighScore) {
-                StorageModule.DataHandler.SaveData.HighScore = CurrentScore;
-            }
         }
         private void OnTaskFailed() {
             CurrentHealth -= m_DamageAmountTaskFailed;
