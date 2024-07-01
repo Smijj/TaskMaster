@@ -3385,7 +3385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MaxTaskTimeoutTime: 6
-  m_MinTaskTimeoutTime: 0.5
+  m_MinTaskTimeoutTime: 0.75
   m_TimeoutGradient:
     serializedVersion: 2
     key0: {r: 0.72156864, g: 0, b: 0.023529412, a: 1}

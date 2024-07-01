@@ -113,6 +113,7 @@ namespace DSmyth.TaskModule
 
             StatesModule.TaskStates.OnTaskFailed?.Invoke();         // Invoke OnTaskFailed event
             m_InputGlyph.SetImageColour(m_ColourInputFailed);       // Highlight Key that the player failed on red
+            m_ImgTimeoutUI.color = m_TimeoutGradient.Evaluate(0);   // Make the UI element that shows how long the player had left to complete the task turn the fail colour as well
             Invoke("GenerateTask", m_ResetDelayTaskFailed);         // Wait 0.5s, then Reset InputSequence
         }
 
