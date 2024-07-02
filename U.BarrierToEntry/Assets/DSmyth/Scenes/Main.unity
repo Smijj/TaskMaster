@@ -1017,6 +1017,7 @@ RectTransform:
   m_Children:
   - {fileID: 167783577}
   - {fileID: 7173510485542945556}
+  - {fileID: 2034710125}
   m_Father: {fileID: 1539067700}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2664,7 +2665,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_RotationSpeed: 20
   m_RotationRadius: 155
-  m_ProjectileSpeed: 15
+  m_ProjectileSpeed: 10
   m_ProjectileLifetime: 1.5
   m_ShootCooldown: 1
   m_ShootCooldownCounter: 0
@@ -2672,6 +2673,7 @@ MonoBehaviour:
   m_PivotPoint: {fileID: 1831298222}
   m_Barrier: {fileID: 590213087}
   m_ProjectilesParent: {fileID: 1354834412}
+  m_ProjectilesSpawnPos: {fileID: 2034710125}
   m_ProjectilePrefab: {fileID: 2984002386223554317, guid: 25571070144f10f4193f75d2fc6bd4d6, type: 3}
   currentMouseXPosInPixels: 371
 --- !u!1 &1193880969
@@ -2937,6 +2939,69 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1359701377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1359701379}
+  - component: {fileID: 1359701378}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1359701378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359701377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d432ea2d897dcf4490614bfed163da5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MusicPlaylists:
+  - Name: fas
+    Mixer: {fileID: 0}
+    PlayInRandomOrder: 0
+    Tracks:
+    - {fileID: 11400000, guid: dfb986a7ff5a1ca4da492f93dbba53c4, type: 2}
+  m_SfxMixer: {fileID: 0}
+  m_SFX: []
+  m_AmbientMixer: {fileID: 0}
+  m_Ambient: []
+  m_SubTrackIsPlaying: 0
+  m_MainQueue: []
+  m_AmbientTracks: []
+  m_CurrentTrack: {fileID: 0}
+  m_CurrentPlaylist:
+    Name: 
+    Mixer: {fileID: 0}
+    PlayInRandomOrder: 1
+    Tracks: []
+--- !u!4 &1359701379
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359701377}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1423688139
 GameObject:
   m_ObjectHideFlags: 0
@@ -4413,6 +4478,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CvsGrp: {fileID: 2032730438}
+--- !u!1 &2034710124
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2034710125}
+  m_Layer: 5
+  m_Name: ProjectileSpawnPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2034710125
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034710124}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 590213087}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -20}
+  m_SizeDelta: {x: 1, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2044198751
 GameObject:
   m_ObjectHideFlags: 0
@@ -4536,7 +4637,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EnemyParent: {fileID: 642709247}
-  m_EnemyPrefab: {fileID: 4049984822431600018, guid: 9b3a6cf188478ad409b4e1691c092d7b, type: 3}
+  m_EnemyPrefabs:
+  - {fileID: 4049984822431600018, guid: 9b3a6cf188478ad409b4e1691c092d7b, type: 3}
+  - {fileID: 4049984822431600018, guid: 7058d1a4e44814041b75e745e07c54e7, type: 3}
+  - {fileID: 4049984822431600018, guid: cf3130f2856abea4891185158956306e, type: 3}
+  - {fileID: 4049984822431600018, guid: 2cbbdd4cf197d6e41b28f353aa6aea64, type: 3}
+  - {fileID: 4049984822431600018, guid: b4244386d8a0ede46890d07ed2d5401d, type: 3}
+  - {fileID: 4049984822431600018, guid: 718ccf54de943f4419d1386758194ac4, type: 3}
+  - {fileID: 4049984822431600018, guid: 8ba46263587c8a742b6b877f96d76b7d, type: 3}
+  - {fileID: 4049984822431600018, guid: 999fb949c007d84498aadcebf5470441, type: 3}
+  - {fileID: 4049984822431600018, guid: 7d6a1ee6fc7dd424ea1768326f059b28, type: 3}
+  - {fileID: 4049984822431600018, guid: da4fc68d519eed64092d0d50df257ee7, type: 3}
   m_CenterPoint: {fileID: 1831298222}
   m_MinEnemySpawnTime: 0.4
   m_MaxEnemySpawnTime: 3
@@ -4853,14 +4964,6 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7749332254474342866, guid: 25571070144f10f4193f75d2fc6bd4d6, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 7749332254474342866, guid: 25571070144f10f4193f75d2fc6bd4d6, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 7749332254474342866, guid: 25571070144f10f4193f75d2fc6bd4d6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -4894,7 +4997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7749332254474342866, guid: 25571070144f10f4193f75d2fc6bd4d6, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -20.5
       objectReference: {fileID: 0}
     - target: {fileID: 7749332254474342866, guid: 25571070144f10f4193f75d2fc6bd4d6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

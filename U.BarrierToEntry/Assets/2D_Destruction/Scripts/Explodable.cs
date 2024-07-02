@@ -39,7 +39,7 @@ public class Explodable : MonoBehaviour
     /// <summary>
     /// Creates fragments if necessary and destroys original gameobject
     /// </summary>
-    [ContextMenu("Explode")]
+    //[ContextMenu("Explode")]
     public void explode(float explodeForce = 5f)
     {
         //if fragments were not created before runtime then create them now
@@ -66,13 +66,26 @@ public class Explodable : MonoBehaviour
             transform.GetChild(0).gameObject.SetActive(false);
         }
     }
+
+
+    public string GetPrefabPath() {
+        string path;
+        if (PrefabStageUtility.GetPrefabStage(gameObject)) {
+            path = PrefabStageUtility.GetPrefabStage(gameObject).assetPath;
+        } else {
+            path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(gameObject);
+        }
+        return path;
+    }
+
+
     /// <summary>
     /// Creates fragments and then disables them
     /// </summary>
 #if UNITY_EDITOR
     public void fragmentInEditor()
     {
-        string assetPath = "Assets/DSmyth/Prefabs/VideoEnemy.prefab";
+        string assetPath = GetPrefabPath();
         var go = PrefabUtility.LoadPrefabContents(assetPath);
         
         if (fragments.Count > 0) {

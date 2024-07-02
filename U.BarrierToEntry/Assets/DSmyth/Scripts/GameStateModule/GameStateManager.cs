@@ -7,17 +7,19 @@ namespace DSmyth.GameStateModule
     public class GameStateManager : MonoBehaviour
     {
         [Header("Config Settings")]
-        [SerializeField] private int m_MaxHealth = 100;
+        [SerializeField] private float m_MaxHealth = 100;
         [SerializeField] private float m_TimeToMaxDifficulty = 120;     // After 2 minutes the game should be as hard as its going to get
-        [SerializeField] private int m_DamageAmountTaskFailed = 10;
-        [SerializeField] private int m_HealAmountTaskCompleted = 3;
+        [SerializeField] private float m_DamageAmountTaskFailed = 10;
+        [SerializeField] private float m_MinHealAmountTaskCompleted = 3;
+        [SerializeField] private float m_MaxHealAmountTaskCompleted = 10;
+        [ReadOnly, SerializeField] private float m_CurrentHealAmountTaskCompleted = 3;
         [SerializeField] private int m_ScoreAmountTaskCompleted = 10;
         [SerializeField] private int m_ScoreAmountEnemyDestroyed = 5;
 
 
         [Header("Game Data")]
-        [ReadOnly, SerializeField] private int m_CurrentHealth = 0;
-        public int CurrentHealth { 
+        [ReadOnly, SerializeField] private float m_CurrentHealth = 0;
+        public float CurrentHealth { 
             get => m_CurrentHealth; 
             private set {
                 m_CurrentHealth = value;
@@ -26,7 +28,7 @@ namespace DSmyth.GameStateModule
                     StatesModule.GameStates.OnGameOver?.Invoke(); // Game Over
                 }
                 else if (m_CurrentHealth > m_MaxHealth) m_CurrentHealth = m_MaxHealth;
-                StatesModule.GameStates.OnHealthChanged?.Invoke((float)m_CurrentHealth / m_MaxHealth);
+                StatesModule.GameStates.OnHealthChanged?.Invoke(m_CurrentHealth / m_MaxHealth);
             }
         }
 
@@ -83,7 +85,10 @@ namespace DSmyth.GameStateModule
                 StatesModule.GameStates.OnDifficultyChanged?.Invoke(1);
                 return;
             }
-            StatesModule.GameStates.OnDifficultyChanged?.Invoke(m_ElapsedGameTime / m_TimeToMaxDifficulty);
+            float difficultyPercentage = m_ElapsedGameTime / m_TimeToMaxDifficulty;
+            StatesModule.GameStates.OnDifficultyChanged?.Invoke(difficultyPercentage);
+
+            m_CurrentHealAmountTaskCompleted = Mathf.Lerp(m_MinHealAmountTaskCompleted, m_MaxHealAmountTaskCompleted, difficultyPercentage);
         }
 
 
@@ -117,7 +122,7 @@ namespace DSmyth.GameStateModule
         /// </summary>
         private void OnTaskCompleted() {
             CurrentScore += m_ScoreAmountTaskCompleted;
-            CurrentHealth += m_HealAmountTaskCompleted;
+            CurrentHealth += m_CurrentHealAmountTaskCompleted;
         }
         private void OnTaskFailed() {
             CurrentHealth -= m_DamageAmountTaskFailed;

@@ -9,7 +9,7 @@ namespace DSmyth.EnemyModule
     {
         [Header("References")]
         [SerializeField] private Transform m_EnemyParent;
-        [SerializeField] private EnemyCtrl m_EnemyPrefab;
+        [SerializeField] private EnemyCtrl[] m_EnemyPrefabs;
         [SerializeField] private RectTransform m_CenterPoint;
         
         [Header("Enemy Settings")]
@@ -65,8 +65,11 @@ namespace DSmyth.EnemyModule
 
         [ContextMenu("SpawnEnemy")]
         private void SpawnEnemy() {
+            if (m_EnemyPrefabs.Length.Equals(0)) return;
+
             Vector2 spawnPos = GetRandomPointAlongCircleCircumference(m_CenterPoint, m_EnemySpawnRadius, m_MinSpawnCircumferenceRange, m_MaxSpawnCircumferenceRange);
-            EnemyCtrl enemyCtrl = Instantiate(m_EnemyPrefab, m_EnemyParent);
+            EnemyCtrl enemyPrefab = m_EnemyPrefabs[Random.Range(0, m_EnemyPrefabs.Length)];
+            EnemyCtrl enemyCtrl = Instantiate(enemyPrefab, m_EnemyParent);
             enemyCtrl.SetTarget(m_CenterPoint, spawnPos);
             m_ActiveEnemies.Add(enemyCtrl);
         }

@@ -20,6 +20,7 @@ namespace DSmyth.BarrierModule
         [SerializeField] private RectTransform m_PivotPoint;
         [SerializeField] private RectTransform m_Barrier;
         [SerializeField] private RectTransform m_ProjectilesParent;
+        [SerializeField] private RectTransform m_ProjectilesSpawnPos;
         [SerializeField] private ProjectileCtrl m_ProjectilePrefab;
 
         [Header("Debug")]
@@ -30,11 +31,15 @@ namespace DSmyth.BarrierModule
             StatesModule.GameStates.OnInitGameplay += OnInitGameplay;
             StatesModule.GameStates.OnStartGameplay += OnStartGameplay;
             StatesModule.GameStates.OnGameOver += OnGameOver;
+
+            StatesModule.TaskStates.OnTaskCompleted += ResetShootCD;
         }
         private void OnDisable() {
             StatesModule.GameStates.OnInitGameplay -= OnInitGameplay;
             StatesModule.GameStates.OnStartGameplay -= OnStartGameplay;
             StatesModule.GameStates.OnGameOver -= OnGameOver;
+
+            StatesModule.TaskStates.OnTaskCompleted -= ResetShootCD;
         }
         private void OnInitGameplay() {
             m_Barrier.localPosition = new Vector3(0, -m_RotationRadius, 0); // Move Barrier to its starting pos
@@ -44,6 +49,12 @@ namespace DSmyth.BarrierModule
         }
         private void OnGameOver() {
             Cursor.lockState = CursorLockMode.None;   // Unlock the mouse when the game is over
+        }
+        /// <summary>
+        /// Reset shoot CD when a task is completed
+        /// </summary>
+        private void ResetShootCD() {
+            m_ShootCooldownCounter = 0;
         }
 
         private void Update() {
@@ -62,7 +73,7 @@ namespace DSmyth.BarrierModule
 
             // On mouse click, instantiate a projectile that shoots out
             if (m_CanShoot && Input.GetMouseButton(0)) {
-                var projectile = Instantiate(m_ProjectilePrefab, m_Barrier.position, m_Barrier.rotation, m_ProjectilesParent);
+                var projectile = Instantiate(m_ProjectilePrefab, m_ProjectilesSpawnPos.position, m_Barrier.rotation, m_ProjectilesParent);
                 projectile.ShootProjectile(-m_Barrier.transform.up * m_ProjectileSpeed, m_ProjectileLifetime);
 
                 m_CanShoot = false;
