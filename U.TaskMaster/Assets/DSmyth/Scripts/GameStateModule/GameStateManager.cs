@@ -7,7 +7,6 @@ namespace DSmyth.GameStateModule
     public class GameStateManager : MonoBehaviour
     {
         [Header("Config Settings")]
-        [SerializeField] private float m_MaxHealth = 100;
         [SerializeField] private float m_TimeToMaxDifficulty = 120;     // After 2 minutes the game should be as hard as its going to get
         [SerializeField] private float m_DamageAmountTaskFailed = 10;
         [SerializeField] private float m_MinHealAmountTaskCompleted = 3;
@@ -15,11 +14,14 @@ namespace DSmyth.GameStateModule
         [ReadOnly, SerializeField] private float m_CurrentHealAmountTaskCompleted = 3;
         [SerializeField] private int m_ScoreAmountTaskCompleted = 10;
         [SerializeField] private int m_ScoreAmountEnemyDestroyed = 5;
+        [SerializeField] private Color m_MenuBGColour = Color.black;
+        [SerializeField] private Color m_GameBGColour = Color.white;
 
+        [SerializeField] private static float m_MaxHealth = 100;
 
         [Header("Game Data")]
-        [ReadOnly, SerializeField] private float m_CurrentHealth = 0;
-        public float CurrentHealth { 
+        [ReadOnly, SerializeField] private static float m_CurrentHealth = 0;
+        public static float CurrentHealth { 
             get => m_CurrentHealth; 
             private set {
                 m_CurrentHealth = value;
@@ -32,8 +34,8 @@ namespace DSmyth.GameStateModule
             }
         }
 
-        [ReadOnly, SerializeField] private int m_CurrentScore = 0;
-        public int CurrentScore {
+        [ReadOnly, SerializeField] private static int m_CurrentScore = 0;
+        public static int CurrentScore {
             get => m_CurrentScore;
             private set {
                 m_CurrentScore = value;
@@ -44,15 +46,25 @@ namespace DSmyth.GameStateModule
             }
         }
 
-        [ReadOnly, SerializeField] private float m_ElapsedGameTime = 0;
+        [ReadOnly, SerializeField] private static float m_ElapsedGameTime = 0;
+        public static float ElapsedGameTime => m_ElapsedGameTime;
+        [ReadOnly, SerializeField] private static int m_CurrentTasksCompleted = 0;
+        public static int CurrentTasksCompleted => m_CurrentTasksCompleted;
+        [ReadOnly, SerializeField] private static int m_CurrentDistractionsDestroyed = 0;
+        public static int CurrentDistractionsDestroyed => m_CurrentDistractionsDestroyed;
 
         private bool m_InGame = false;
+        private Camera m_Camera;
 
 
         #region Unity + Events
 
+        private void Awake() {
+            m_Camera = Camera.main;
+        }
         private void Start() {
             AudioManager.Instance.PlayPlaylist("Menu");
+            m_Camera.backgroundColor = m_MenuBGColour;
         }
         private void OnEnable() {
             StatesModule.GameStates.OnInitGameplay += OnInitGameplay;
@@ -61,6 +73,7 @@ namespace DSmyth.GameStateModule
 
             StatesModule.EnemyStates.OnDistractionSucessful += OnDistractionSucessful;
             StatesModule.EnemyStates.OnDistractionDestroyed += OnDistractionDestroyed;
+            StatesModule.EnemyStates.OnDistractionBlocked += OnDistractionBlocked;
             StatesModule.TaskStates.OnTaskCompleted += OnTaskCompleted;
             StatesModule.TaskStates.OnTaskFailed += OnTaskFailed;
 
@@ -73,6 +86,7 @@ namespace DSmyth.GameStateModule
 
             StatesModule.EnemyStates.OnDistractionSucessful -= OnDistractionSucessful;
             StatesModule.EnemyStates.OnDistractionDestroyed -= OnDistractionDestroyed;
+            StatesModule.EnemyStates.OnDistractionBlocked -= OnDistractionBlocked;
             StatesModule.TaskStates.OnTaskCompleted -= OnTaskCompleted;
             StatesModule.TaskStates.OnTaskFailed -= OnTaskFailed;
 
@@ -90,42 +104,33 @@ namespace DSmyth.GameStateModule
 
             HandleDifficulty();
         }
-        private void HandleDifficulty() {
-            if (!StatesModule.GameStates.IsGamePlaying || m_ElapsedGameTime >= m_TimeToMaxDifficulty) return;
-            
-            // Increase the current playtime if the game is actively playing
-            m_ElapsedGameTime += Time.deltaTime;
-            if (m_ElapsedGameTime >= m_TimeToMaxDifficulty) {
-                StatesModule.GameStates.OnDifficultyChanged?.Invoke(1);
-                return;
-            }
-            float difficultyPercentage = m_ElapsedGameTime / m_TimeToMaxDifficulty;
-            StatesModule.GameStates.OnDifficultyChanged?.Invoke(difficultyPercentage);
-
-            m_CurrentHealAmountTaskCompleted = Mathf.Lerp(m_MinHealAmountTaskCompleted, m_MaxHealAmountTaskCompleted, difficultyPercentage);
-        }
-
 
         private void OnInitGameplay() {
             m_CurrentHealth = m_MaxHealth;
+            
+            // Reset tracking stats
             m_CurrentScore = 0;
             m_ElapsedGameTime = 0;
+            m_CurrentTasksCompleted = 0;
+            m_CurrentDistractionsDestroyed = 0;
 
+            m_Camera.backgroundColor = m_GameBGColour;
             AudioManager.Instance.StopMusic();
             AudioManager.Instance.PlaySFX("StartGame");
         }
         private void OnStartGameplay() {
             StatesModule.GameStates.IsGamePlaying = true;
             Cursor.lockState = CursorLockMode.Locked;   // Lock the mouse when the gameplay starts
-            
             m_InGame = true;
+            
             AudioManager.Instance.PlayPlaylist("Game");
         }
         private void OnGameOver() {
             StatesModule.GameStates.IsGamePlaying = false;
             Cursor.lockState = CursorLockMode.None;   // Unlock the mouse when the game is over
-
             m_InGame = false;
+
+            m_Camera.backgroundColor = m_MenuBGColour;
             AudioManager.Instance.PlaySFX("GameOver");
             AudioManager.Instance.PlayPlaylist("Menu");
         }
@@ -135,12 +140,17 @@ namespace DSmyth.GameStateModule
         /// </summary>
         private void OnDistractionSucessful(int enemyDamage) {
             CurrentHealth -= enemyDamage;
+            AudioManager.Instance.PlaySFX("Dink");
         }
         /// <summary>
         /// If the distraction has been destroyed by the player shooting a projectile at it increase the score by an amount
         /// </summary>
         private void OnDistractionDestroyed() {
             CurrentScore += m_ScoreAmountEnemyDestroyed;
+            m_CurrentDistractionsDestroyed++;
+        }
+        private void OnDistractionBlocked() {
+            m_CurrentDistractionsDestroyed++;
         }
 
         /// <summary>
@@ -149,6 +159,7 @@ namespace DSmyth.GameStateModule
         private void OnTaskCompleted() {
             CurrentScore += m_ScoreAmountTaskCompleted;
             CurrentHealth += m_CurrentHealAmountTaskCompleted;
+            m_CurrentTasksCompleted++;
 
             AudioManager.Instance.PlaySFX("TaskComplete");
         }
@@ -163,6 +174,21 @@ namespace DSmyth.GameStateModule
 
         #endregion
 
+
+        private void HandleDifficulty() {
+            if (!StatesModule.GameStates.IsGamePlaying || m_ElapsedGameTime >= m_TimeToMaxDifficulty) return;
+
+            // Increase the current playtime if the game is actively playing
+            m_ElapsedGameTime += Time.deltaTime;
+            if (m_ElapsedGameTime >= m_TimeToMaxDifficulty) {
+                StatesModule.GameStates.OnDifficultyChanged?.Invoke(1);
+                return;
+            }
+            float difficultyPercentage = m_ElapsedGameTime / m_TimeToMaxDifficulty;
+            StatesModule.GameStates.OnDifficultyChanged?.Invoke(difficultyPercentage);
+
+            m_CurrentHealAmountTaskCompleted = Mathf.Lerp(m_MinHealAmountTaskCompleted, m_MaxHealAmountTaskCompleted, difficultyPercentage);
+        }
 
         public void StartGame() {
             StatesModule.GameStates.OnInitGameplay?.Invoke();

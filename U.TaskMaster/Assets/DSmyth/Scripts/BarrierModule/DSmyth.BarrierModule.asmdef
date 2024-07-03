@@ -3,8 +3,7 @@
     "rootNamespace": "DSmyth.BarrierModule",
     "references": [
         "GUID:f285b3f556dafee42919f221c7d6a6da",
-        "GUID:14285d9fb9820d3428133f81e8c121db",
-        "GUID:6df2f341909e6f347b1770b2db138237"
+        "GUID:14285d9fb9820d3428133f81e8c121db"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

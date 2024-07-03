@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_DisplayName: Song Name
   m_Clip: {fileID: 8300000, guid: 91a631cf5a9ff5e49b598abdfa4f3206, type: 3}
-  m_Volume: 0.7
+  m_Volume: 0.6
   m_Pitch: 1
   m_Loop: 0
   m_TrackFadeInTime: 0.25

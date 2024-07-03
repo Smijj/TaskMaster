@@ -40,7 +40,7 @@ namespace DSmyth.StorageModule {
             string saveDataJSON = JsonUtility.ToJson(saveData);
             System.IO.File.WriteAllText(filePath, saveDataJSON);
 
-            Debug.Log($"Save Sucessful.\nJSON: {saveDataJSON}\nPath: '{filePath}'");
+            //Debug.Log($"Save Sucessful.\nJSON: {saveDataJSON}\nPath: '{filePath}'");
         }
         /// <summary>
         /// Internal Load Function
