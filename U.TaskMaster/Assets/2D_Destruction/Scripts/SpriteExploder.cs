@@ -2,9 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Delaunay;
-using Delaunay.Geo;
-using UnityEditor.SceneManagement;
-
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -297,9 +294,11 @@ public static class SpriteExploder {
 
         // Assign mesh
         meshFilter.mesh = uMesh;
+#if UNITY_EDITOR
         //PrefabUtility.ApplyObjectOverride(meshFilter, prefabSource.scene.path, InteractionMode.AutomatedAction);
         AssetDatabase.AddObjectToAsset(uMesh, prefabSource.scene.path);
         AssetDatabase.SaveAssets();
+#endif
 
         // Assign Material
         //setFragmentMaterial(piece, source);

@@ -20,6 +20,9 @@ namespace DSmyth.BarrierModule
         [Header("References")]
         [SerializeField] private RectTransform m_PivotPoint;
         [SerializeField] private RectTransform m_Barrier;
+        [SerializeField] private Image m_ImgBarrier;
+        [SerializeField] private Sprite m_BarrierCharged;
+        [SerializeField] private Sprite m_BarrierNoCharge;
         [SerializeField] private Image m_ShootCooldownUI;
         [SerializeField] private RectTransform m_ProjectilesParent;
         [SerializeField] private RectTransform m_ProjectilesSpawnPos;
@@ -28,51 +31,47 @@ namespace DSmyth.BarrierModule
         [Header("Debug")]
         [ReadOnly, SerializeField] private float currentMouseXPosInPixels = Screen.width / 2;
 
+        #region Unity + Events
 
         private void OnEnable() {
             StatesModule.GameStates.OnInitGameplay += OnInitGameplay;
-            StatesModule.GameStates.OnStartGameplay += OnStartGameplay;
-            StatesModule.GameStates.OnGameOver += OnGameOver;
-
             StatesModule.TaskStates.OnTaskCompleted += ResetShootCD;
         }
         private void OnDisable() {
             StatesModule.GameStates.OnInitGameplay -= OnInitGameplay;
-            StatesModule.GameStates.OnStartGameplay -= OnStartGameplay;
-            StatesModule.GameStates.OnGameOver -= OnGameOver;
-
             StatesModule.TaskStates.OnTaskCompleted -= ResetShootCD;
         }
+        private void Update() {
+            HandleBarrierMovement();
+            HandleBarrierShooting();
+        }
+
         private void OnInitGameplay() {
             m_Barrier.localPosition = new Vector3(0, -m_RotationRadius, 0); // Move Barrier to its starting pos
             m_ShootCooldownUI.fillAmount = 0;   // Hide the shoot CD UI
-        }
-        private void OnStartGameplay() {
-            Cursor.lockState = CursorLockMode.Locked;   // Lock the mouse when the gameplay starts
-        }
-        private void OnGameOver() {
-            Cursor.lockState = CursorLockMode.None;   // Unlock the mouse when the game is over
         }
         /// <summary>
         /// Reset shoot CD when a task is completed
         /// </summary>
         private void ResetShootCD() {
             m_ShootCooldownCounter = 0;
+            if (m_ShootCooldownUI) m_ShootCooldownUI.fillAmount = 0;
+            if (m_ImgBarrier && m_BarrierCharged) m_ImgBarrier.sprite = m_BarrierCharged;
         }
 
-        private void Update() {
-            HandleBarrierMovement();
-            HandleBarrierShooting();
-        }
+        #endregion
 
         private void HandleBarrierShooting() {
             if (!StatesModule.GameStates.IsGamePlaying || !m_ProjectilePrefab) return;
 
-            if (m_ShootCooldownCounter > 0) {
-                m_ShootCooldownCounter -= Time.deltaTime;
-                if (m_ShootCooldownUI) m_ShootCooldownUI.fillAmount = m_ShootCooldownCounter / m_ShootCooldown;
-            } else {
-                m_CanShoot = true;
+            if (!m_CanShoot) {
+                if (m_ShootCooldownCounter > 0) {
+                    m_ShootCooldownCounter -= Time.deltaTime;
+                    if (m_ShootCooldownUI) m_ShootCooldownUI.fillAmount = m_ShootCooldownCounter / m_ShootCooldown;
+                } else {
+                    m_CanShoot = true;
+                    if (m_ImgBarrier && m_BarrierCharged) m_ImgBarrier.sprite = m_BarrierCharged;
+                }
             }
 
             // On mouse click, instantiate a projectile that shoots out
@@ -82,6 +81,9 @@ namespace DSmyth.BarrierModule
 
                 m_CanShoot = false;
                 m_ShootCooldownCounter = m_ShootCooldown;
+                if (m_ImgBarrier && m_BarrierNoCharge) m_ImgBarrier.sprite = m_BarrierNoCharge;
+
+                StatesModule.GameStates.OnShoot?.Invoke();
             }
         }
         private void HandleBarrierMovement() {

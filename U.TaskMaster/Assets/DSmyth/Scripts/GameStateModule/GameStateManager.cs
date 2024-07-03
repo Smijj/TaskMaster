@@ -46,9 +46,14 @@ namespace DSmyth.GameStateModule
 
         [ReadOnly, SerializeField] private float m_ElapsedGameTime = 0;
 
+        private bool m_InGame = false;
+
 
         #region Unity + Events
 
+        private void Start() {
+            AudioManager.Instance.PlayPlaylist("Menu");
+        }
         private void OnEnable() {
             StatesModule.GameStates.OnInitGameplay += OnInitGameplay;
             StatesModule.GameStates.OnStartGameplay += OnStartGameplay;
@@ -58,6 +63,8 @@ namespace DSmyth.GameStateModule
             StatesModule.EnemyStates.OnDistractionDestroyed += OnDistractionDestroyed;
             StatesModule.TaskStates.OnTaskCompleted += OnTaskCompleted;
             StatesModule.TaskStates.OnTaskFailed += OnTaskFailed;
+
+            StatesModule.GameStates.OnShoot += OnShoot;
         }
         private void OnDisable() {
             StatesModule.GameStates.OnInitGameplay -= OnInitGameplay;
@@ -68,10 +75,17 @@ namespace DSmyth.GameStateModule
             StatesModule.EnemyStates.OnDistractionDestroyed -= OnDistractionDestroyed;
             StatesModule.TaskStates.OnTaskCompleted -= OnTaskCompleted;
             StatesModule.TaskStates.OnTaskFailed -= OnTaskFailed;
+
+            StatesModule.GameStates.OnShoot -= OnShoot;
         }
         private void Update() {
-            if (Input.GetKeyDown(KeyCode.Escape)) {
-                StopGame();
+            if (m_InGame) {
+                if (Input.GetKeyDown(KeyCode.Escape)) {
+                    if (StatesModule.GameStates.IsGamePlaying) 
+                        PauseGame();
+                    else 
+                        ResumeGame();
+                }
             }
 
             HandleDifficulty();
@@ -96,12 +110,24 @@ namespace DSmyth.GameStateModule
             m_CurrentHealth = m_MaxHealth;
             m_CurrentScore = 0;
             m_ElapsedGameTime = 0;
+
+            AudioManager.Instance.StopMusic();
+            AudioManager.Instance.PlaySFX("StartGame");
         }
         private void OnStartGameplay() {
             StatesModule.GameStates.IsGamePlaying = true;
+            Cursor.lockState = CursorLockMode.Locked;   // Lock the mouse when the gameplay starts
+            
+            m_InGame = true;
+            AudioManager.Instance.PlayPlaylist("Game");
         }
         private void OnGameOver() {
             StatesModule.GameStates.IsGamePlaying = false;
+            Cursor.lockState = CursorLockMode.None;   // Unlock the mouse when the game is over
+
+            m_InGame = false;
+            AudioManager.Instance.PlaySFX("GameOver");
+            AudioManager.Instance.PlayPlaylist("Menu");
         }
 
         /// <summary>
@@ -123,9 +149,16 @@ namespace DSmyth.GameStateModule
         private void OnTaskCompleted() {
             CurrentScore += m_ScoreAmountTaskCompleted;
             CurrentHealth += m_CurrentHealAmountTaskCompleted;
+
+            AudioManager.Instance.PlaySFX("TaskComplete");
         }
         private void OnTaskFailed() {
             CurrentHealth -= m_DamageAmountTaskFailed;
+            AudioManager.Instance.PlaySFX("TaskFailed");
+        }
+
+        private void OnShoot() {
+            AudioManager.Instance.PlaySFX("Shoot");
         }
 
         #endregion
@@ -135,8 +168,30 @@ namespace DSmyth.GameStateModule
             StatesModule.GameStates.OnInitGameplay?.Invoke();
         }
         public void StopGame() {
+            StatesModule.GameStates.OnGameResume?.Invoke();
             StatesModule.GameStates.OnGameOver?.Invoke();
+        }
+        public void PauseGame() {
+            StatesModule.GameStates.OnGamePause?.Invoke();
+            StatesModule.GameStates.IsGamePlaying = false;  // Essentially pauses the game
+            Cursor.lockState = CursorLockMode.None;   // Unlock the mouse when the game is over
+            
+            AudioManager.Instance.PlaySFX("Pause");
+        }
+        public void ResumeGame() {
+            StatesModule.GameStates.OnGameResume?.Invoke();
+            StatesModule.GameStates.IsGamePlaying = true;
+            Cursor.lockState = CursorLockMode.Locked;   // Lock the mouse when the gameplay starts
 
+            AudioManager.Instance.PlaySFX("Resume");
+        }
+
+
+        public void QuitGame() {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+            Application.Quit();
         }
     }
 }

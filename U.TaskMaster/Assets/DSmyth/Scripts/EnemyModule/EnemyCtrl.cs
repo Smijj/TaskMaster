@@ -38,6 +38,8 @@ namespace DSmyth.EnemyModule
             StatesModule.GameStates.OnGameOver -= OnGameOver;
         }
         private void Update() {
+            if (!StatesModule.GameStates.IsGamePlaying) return;
+
             HandleEnemyMovement();
         }
 

@@ -10,6 +10,11 @@ namespace DSmyth.StatesModule
         public static Action OnStartGameplay;
         public static Action OnGameOver;
 
+        public static Action OnGamePause;
+        public static Action OnGameResume;
+
+        public static Action OnShoot;
+
         /// <summary>
         /// Passes through the Current Health percentage whenever the Current Health value changes.
         /// </summary>

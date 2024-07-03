@@ -67,7 +67,7 @@ public class Explodable : MonoBehaviour
         }
     }
 
-
+#if UNITY_EDITOR
     public string GetPrefabPath() {
         string path;
         if (PrefabStageUtility.GetPrefabStage(gameObject)) {
@@ -77,7 +77,7 @@ public class Explodable : MonoBehaviour
         }
         return path;
     }
-
+#endif
 
     /// <summary>
     /// Creates fragments and then disables them

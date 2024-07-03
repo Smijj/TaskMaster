@@ -14,8 +14,9 @@ public class ExplodableFragments : ExplodableAddon{
             fragExp.orderInLayer = explodable.orderInLayer;
 
             fragment.layer = explodable.gameObject.layer;
-
+#if UNITY_EDITOR
             fragExp.fragmentInEditor();
+#endif
         }
     }
 }

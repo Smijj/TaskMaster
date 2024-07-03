@@ -1835,7 +1835,7 @@ MonoBehaviour:
   m_Collider: {fileID: 5903357586918411382}
   m_DistractionSucessfullVFX: {fileID: 8189375779078641272, guid: b06e13ed11f313141b8aa41e03b985a2, type: 3}
   m_FragmentLifetime: 1.5
-  m_DeathSpriteMaterial: {fileID: 2100000, guid: 79282b26a3edcf144ab18de7f4e0ff79, type: 2}
+  m_DeathSpriteMaterial: {fileID: 2100000, guid: 0b6c36f8aa1ac794994d0d7e55c39759, type: 2}
   m_Explodable: {fileID: 3428022116096151250}
 --- !u!114 &3428022116096151250
 MonoBehaviour:
