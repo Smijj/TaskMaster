@@ -1,0 +1,20 @@
+{
+    "name": "DSmyth.UIModule",
+    "rootNamespace": "DSmyth.UIModule",
+    "references": [
+        "GUID:14285d9fb9820d3428133f81e8c121db",
+        "GUID:f285b3f556dafee42919f221c7d6a6da",
+        "GUID:065221659470ea6499833ebf970478d3",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:f947ee40e4a7250479ef8dc5c4f65c19"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

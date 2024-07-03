@@ -1,0 +1,16 @@
+{
+    "name": "AudioManager",
+    "rootNamespace": "",
+    "references": [
+        "GUID:065221659470ea6499833ebf970478d3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

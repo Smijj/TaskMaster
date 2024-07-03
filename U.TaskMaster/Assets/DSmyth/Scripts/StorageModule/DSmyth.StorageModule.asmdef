@@ -1,0 +1,14 @@
+{
+    "name": "DSmyth.StorageModule",
+    "rootNamespace": "DSmyth.StorageModule",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
