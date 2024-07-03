@@ -26,6 +26,7 @@ namespace DSmyth.TaskModule
 
         [Header("References")]
         [SerializeField] private InputGlyphCtrl m_InputGlyph;
+        [SerializeField] private Sprite m_BlankKey;
         [SerializeField] private Image m_ImgTimeoutUI;
 
         [Header("Debug")]
@@ -104,6 +105,7 @@ namespace DSmyth.TaskModule
             Debug.Log("Task Complete!");
 
             StatesModule.TaskStates.OnTaskCompleted?.Invoke();  // Invoke OnTaskCompleted event
+            if (m_BlankKey) m_InputGlyph.SetImageSprite(m_BlankKey);            // Switch to a blank key for the small m_ResetDelayTaskCorrect time to help the players brain reset a bit
             m_InputGlyph.SetImageColour(m_ColourInputCorrect);  // Change the colour of the InputGlyph
             Invoke("GenerateTask", m_ResetDelayTaskCorrect);    // Wait 0.5s, then Reset InputSequence
         }

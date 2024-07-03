@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DSmyth.BarrierModule
 {
@@ -19,6 +20,7 @@ namespace DSmyth.BarrierModule
         [Header("References")]
         [SerializeField] private RectTransform m_PivotPoint;
         [SerializeField] private RectTransform m_Barrier;
+        [SerializeField] private Image m_ShootCooldownUI;
         [SerializeField] private RectTransform m_ProjectilesParent;
         [SerializeField] private RectTransform m_ProjectilesSpawnPos;
         [SerializeField] private ProjectileCtrl m_ProjectilePrefab;
@@ -43,6 +45,7 @@ namespace DSmyth.BarrierModule
         }
         private void OnInitGameplay() {
             m_Barrier.localPosition = new Vector3(0, -m_RotationRadius, 0); // Move Barrier to its starting pos
+            m_ShootCooldownUI.fillAmount = 0;   // Hide the shoot CD UI
         }
         private void OnStartGameplay() {
             Cursor.lockState = CursorLockMode.Locked;   // Lock the mouse when the gameplay starts
@@ -67,6 +70,7 @@ namespace DSmyth.BarrierModule
 
             if (m_ShootCooldownCounter > 0) {
                 m_ShootCooldownCounter -= Time.deltaTime;
+                if (m_ShootCooldownUI) m_ShootCooldownUI.fillAmount = m_ShootCooldownCounter / m_ShootCooldown;
             } else {
                 m_CanShoot = true;
             }

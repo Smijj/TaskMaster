@@ -29,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 275251088304578281}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.5, y: 1.25, z: 1.25}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6533120885061463380}
   - {fileID: 1049176942238991072}
@@ -56,7 +56,7 @@ MonoBehaviour:
   m_DistractionSucessfullVFX: {fileID: 8189375779078641272, guid: b06e13ed11f313141b8aa41e03b985a2, type: 3}
   m_FragmentLifetime: 1.5
   m_DeathSpriteMaterial: {fileID: 2100000, guid: 79282b26a3edcf144ab18de7f4e0ff79, type: 2}
-  m_VideoToPlay: {fileID: 32900000, guid: ac30fd421b1919249857b741c2e311c1, type: 3}
+  m_VideoToPlay: {fileID: 32900000, guid: b3c6b1581684e0d44b59ee6f7c64c284, type: 3}
   m_VPlayer: {fileID: 5377248288419650944}
   m_Explodable: {fileID: 5886854510501478505}
 --- !u!114 &5886854510501478505
